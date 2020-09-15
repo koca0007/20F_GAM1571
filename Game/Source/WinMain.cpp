@@ -1,6 +1,8 @@
-#include <Windows.h>
+#include "Framework.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	int bp = 1;
+	fw::FWCore* pFramework = new fw::FWCore();
+
+	delete pFramework;
 }
