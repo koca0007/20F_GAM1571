@@ -13,6 +13,7 @@
 #include "GL/GLExtensions.h"
 #include "GL/WGLExtensions.h"
 #include "GL/MyGLContext.h"
+#include "GameCore.h"
 
 namespace fw {
 
@@ -76,7 +77,7 @@ bool FWCore::Init(int width, int height)
     return true;
 }
 
-int FWCore::Run()
+int FWCore::Run(GameCore* pGame)
 {
     // Main loop.
     MSG message;
@@ -98,6 +99,8 @@ int FWCore::Run()
         }
         else
         {
+            pGame->Update();
+            pGame->Draw();
             SwapBuffers();
 
             // Backup the state of the keyboard and mouse.

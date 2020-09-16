@@ -1,8 +1,9 @@
 workspace "Game"
-	configurations { "Debug", "Release" }
-	location "build"
-	platforms { "x64" }
-	characterset "MBCS"
+	configurations	{ "Debug", "Release" }
+	location		"build"
+	platforms		{ "x64" }
+	characterset	"MBCS"
+	startproject	"Game"
 
 
 
@@ -12,21 +13,21 @@ project "Game"
 	location	"build/Game"
 
 	files {
-		"Game/Source/**.cpp",
-		"Game/Source/**.h",
-		"GenerateProjectFiles.bat",
-		"premake5.lua",
-		".gitignore"
+				"Game/Source/**.cpp",
+				"Game/Source/**.h",
+				"GenerateProjectFiles.bat",
+				"premake5.lua",
+				".gitignore"
 	}
 
 	includedirs {
-		"Framework/Source",
-		"Game/Source",
+				"Framework/Source",
+				"Game/Source",
 	}
 
 	links {
-		"Framework",
-		"opengl32",
+				"Framework",
+				"opengl32",
 	}
 
 project "Framework"
@@ -34,8 +35,8 @@ project "Framework"
 	location	"build/Framework"
 
 	files {
-		"Framework/Source/**.cpp",
-		"Framework/Source/**.h",
+				"Framework/Source/**.cpp",
+				"Framework/Source/**.h",
 		
 	}
 
