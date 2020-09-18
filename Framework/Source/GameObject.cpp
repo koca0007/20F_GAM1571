@@ -14,14 +14,6 @@ namespace fw
 
 	GameObject::~GameObject()
 	{
-		if (m_Mesh != nullptr)
-		{
-			delete m_Mesh;
-		}
-		if (m_Shader != nullptr)
-		{
-			delete m_Shader;
-		}
 	}
 
 	void GameObject::Update()
