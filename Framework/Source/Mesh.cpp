@@ -55,19 +55,30 @@ namespace fw {
 		// Define our triangle as 3 positions.
 		float attribsAnimal[] =
 		{
-			-0.5f, 0.7f, // Center
-			-0.7f, 0.7f, // Top right
-			-.5f, 0.5f, // right center
-			-.5f, .6f, // right center
-			-0.1f, 0.6f,
-			-.6f, .2f,
-			-.55f, .3f,
-			-0.65f, .3f,
-			-0.6f, 0.0f
+			-0.6f, 0.0f,	//TopLeft of the Body
+			-0.1f, 0.0f,	//TopRight of the body
+			-0.6f, 0.0f,	//TopRight of the body
+			-0.6f, -0.2f,	//BottomLeft of the body
+			-0.6f, -0.2f,	// BottomLeft of the body
+			-0.1f, -0.2f,	//BottomRight of the body
+			-0.1f, -0.2f,	//BottomRight of the body
+			-0.1f, 0.0f,	//TopRight of the body
+			-0.1f, 0.0f,	//TopRight of the body
+			 0.1f, -0.1f,	//Head - Middle
+			 0.1f, -0.1f,	//Head - Middle
+			-0.1f, -0.2f,	//BottomRight of the Body
+			-0.1f, 0.0f,	//TopRight of the body
+			 0.1f, 0.1f,	// Left arm / top
+			-0.1f, -0.2f,	//BottomRight of the body
+			 0.1f, -0.3f,	// Right arm / bottom
+			-0.6f, 0.0f,	//TopLeft of the body
+			-0.7f, 0.05f,	//top leg
+			-0.6f, -0.2f,	//bottomLeft of the body
+			-0.7f, -0.25f	//Bottom Leg
 		};
 
-		m_NumVertices = 9;
-		m_PrimitiveType = GL_TRIANGLES;
+		m_NumVertices = 20;
+		m_PrimitiveType = GL_LINES;
 
 		// Copy our attribute data into the VBO.
 		int numAttributeComponents = m_NumVertices * 2; // x & y for each vertex.
