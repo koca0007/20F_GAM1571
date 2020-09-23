@@ -37,8 +37,11 @@ project "Framework"
 	files {
 		"Framework/Source/**.cpp",
 		"Framework/Source/**.h",
+		"Framework/Libraries/imgui/**.cpp",
+		"Framework/Libraries/imgui/**.h"
 	}
 
 	includedirs {
 		"Framework/Source",
+		"Framework/Libraries/imgui"
 	}

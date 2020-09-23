@@ -1,6 +1,6 @@
 #include "FrameworkPCH.h"
-#include "Mesh.h"
 #include "GameObject.h"
+#include "Mesh.h"
 #include "Utility/ShaderProgram.h"
 
 
@@ -14,6 +14,7 @@ namespace fw
 
 	GameObject::~GameObject()
 	{
+
 	}
 
 	void GameObject::Update()

@@ -14,6 +14,8 @@ public:
 	void Update();
 	void Draw(class ShaderProgram* shader);
 
+protected:
+
 	Mesh* m_Mesh = nullptr;
 	ShaderProgram* m_Shader;
 };
