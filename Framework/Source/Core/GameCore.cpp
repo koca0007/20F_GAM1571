@@ -2,6 +2,7 @@
 
 
 #include "GameCore.h"
+#include "FWCore.h"
 
 namespace fw {
 
@@ -10,9 +11,14 @@ namespace fw {
 		m_pFramework = pFramework;
 	}
 
-GameCore::~GameCore()
-{
+	GameCore::~GameCore()
+	{
+	
+	}
 
-}
+	FWCore* GameCore::GetFramework()
+	{
+		return m_pFramework;
+	}
 
 } // namespace 

@@ -1,25 +1,29 @@
 #pragma once
 
-namespace fw
-{
+#include "Math/Vector.h"
+
+namespace fw {
+
 	class Mesh;
 	class ShaderProgram;
+	class GameCore;
+	class FWCore;
 
-class GameObject
-{
-public:
-	GameObject(Mesh* mesh);
-	~GameObject();
+	class GameObject
+	{
+	public:
+		GameObject(Vector2 vec2, Mesh* pMesh, ShaderProgram* pShader, GameCore* pGameCore);
+		virtual ~GameObject();
 
-	void Update();
-	void Draw(class ShaderProgram* shader);
+		virtual void Update();
+		virtual void Draw();
 
-protected:
+	protected:
+		Vector2 position;
 
-	Mesh* m_Mesh = nullptr;
-	ShaderProgram* m_Shader;
-};
+		Mesh* m_pMesh = nullptr;
+		ShaderProgram* m_pShader = nullptr;
+		GameCore* m_GameCore;
+	};
 
-}
-
-
+} // namespace fw

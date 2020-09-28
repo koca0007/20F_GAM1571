@@ -1,21 +1,27 @@
 #include "FrameworkPCH.h"
-#include "Utility/ShaderProgram.h"
 
 #include "Mesh.h"
+#include "Utility/ShaderProgram.h"
+#include "Utility/Helpers.h"
+#include "Math/Vector.h"
 
 namespace fw {
 
-	Mesh::Mesh(ShaderProgram* shader)
+	Mesh::Mesh()
 	{
-		m_Shader = shader;
+	}
+
+	Mesh::Mesh(int primitiveType, int numVertices, float* pVertices)
+	{
+		CreateShape(primitiveType, numVertices, pVertices);
 	}
 
 	Mesh::~Mesh()
 	{
-		
+		glDeleteBuffers(1, &m_VBO);
 	}
 
-	void Mesh::MakeHumanoid()
+	void Mesh::CreateShape(int primitiveType, int numVertices, float* pVertices)
 	{
 		// Generate a buffer for our vertex attributes.
 		glGenBuffers(1, &m_VBO); // m_VBO is a GLuint.
@@ -23,71 +29,29 @@ namespace fw {
 		// Set this VBO to be the currently active one.
 		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 
-		// Define our triangle as 3 positions.
-		float attribs[] =
-		{
-			0.5f, 0.7f, // Center
-			0.7f, 0.7f, // Top right
-			0.6f, 0.5f, // right center
-			0.5f, .6f, // right center
-			0.7f, 0.6f,
-			.6f, .2f,
-			.55f, .3f,
-			0.65f, .3f,
-			0.6f, 0.0f
-		};
-
-		m_NumVertices = 9;
-		m_PrimitiveType = GL_TRIANGLES;
+		m_NumVertices = numVertices;
+		m_PrimitiveType = primitiveType;
 
 		// Copy our attribute data into the VBO.
 		int numAttributeComponents = m_NumVertices * 2; // x & y for each vertex.
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numAttributeComponents, attribs, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numAttributeComponents, pVertices, GL_STATIC_DRAW);
 	}
 
-	void Mesh::MakeAnimal()
+	void Mesh::SetUniform1f(ShaderProgram* pShader, char* name, float value)
 	{
-		glGenBuffers(1, &m_VBO); // m_VBO is a GLuint.
-
-			// Set this VBO to be the currently active one.
-		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-
-		// Define our triangle as 3 positions.
-		float attribsAnimal[] =
-		{
-			-0.6f, 0.0f,	//TopLeft of the Body
-			-0.1f, 0.0f,	//TopRight of the body
-			-0.6f, 0.0f,	//TopRight of the body
-			-0.6f, -0.2f,	//BottomLeft of the body
-			-0.6f, -0.2f,	// BottomLeft of the body
-			-0.1f, -0.2f,	//BottomRight of the body
-			-0.1f, -0.2f,	//BottomRight of the body
-			-0.1f, 0.0f,	//TopRight of the body
-			-0.1f, 0.0f,	//TopRight of the body
-			 0.1f, -0.1f,	//Head - Middle
-			 0.1f, -0.1f,	//Head - Middle
-			-0.1f, -0.2f,	//BottomRight of the Body
-			-0.1f, 0.0f,	//TopRight of the body
-			 0.1f, 0.1f,	// Left arm / top
-			-0.1f, -0.2f,	//BottomRight of the body
-			 0.1f, -0.3f,	// Right arm / bottom
-			-0.6f, 0.0f,	//TopLeft of the body
-			-0.7f, 0.05f,	//top leg
-			-0.6f, -0.2f,	//bottomLeft of the body
-			-0.7f, -0.25f	//Bottom Leg
-		};
-
-		m_NumVertices = 20;
-		m_PrimitiveType = GL_LINES;
-
-		// Copy our attribute data into the VBO.
-		int numAttributeComponents = m_NumVertices * 2; // x & y for each vertex.
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numAttributeComponents, attribsAnimal, GL_STATIC_DRAW);
+		int loc = glGetUniformLocation(pShader->GetProgram(), name);
+		glUniform1f(loc, value);
 	}
 
-	void Mesh::Draw()
+	void Mesh::SetUniform2f(ShaderProgram* pShader, char* name, Vector2 position)
 	{
-		glUseProgram(m_Shader->GetProgram());
+		int pos = glGetUniformLocation(pShader->GetProgram(), name);
+		glUniform2f(pos, position.x, position.y );
+	}
+
+	void Mesh::Draw(Vector2 position, ShaderProgram* pShader)
+	{
+		glUseProgram(pShader->GetProgram());
 
 		// Set this VBO to be the currently active one.
 		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
@@ -98,6 +62,12 @@ namespace fw {
 
 		// Describe the attributes in the VBO to OpenGL.
 		glVertexAttribPointer(loc, 2, GL_FLOAT, GL_FALSE, 8, (void*)0);
+
+		// Setup our uniforms.
+		{
+			/*SetUniform1f(pShader, "u_Time", (float)GetSystemTimeSinceGameStart());*/
+			SetUniform2f(pShader, "u_Position", position);
+		}
 
 		// Draw the primitive.
 		glDrawArrays(m_PrimitiveType, 0, m_NumVertices);

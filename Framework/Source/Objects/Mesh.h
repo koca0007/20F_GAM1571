@@ -1,23 +1,29 @@
 #pragma once
 
 namespace fw {
-	
-	class ShaderProgram;
 
-	class Mesh 
+	class Vector2;
+	class ShaderProgram;
+	class Player;
+
+	class Mesh
 	{
 	public:
-		Mesh(ShaderProgram* shader);
+		Mesh();
+		Mesh(int primitiveType, int numVertices, float* pVertices);
 		virtual ~Mesh();
 
-		void Draw();
+		void CreateShape(int primitiveType, int numVertices, float* pVertices);
 
-		void MakeHumanoid();
-		void MakeAnimal();
+		void SetUniform1f(ShaderProgram* pShader, char* name, float value);
+		void SetUniform2f(ShaderProgram* pShader, char* name, Vector2 position);
+			
+
+		void Draw(Vector2 position, ShaderProgram* pShader);
 
 	protected:
 		GLuint m_VBO = 0;
-		ShaderProgram* m_Shader;
+
 		int m_NumVertices = 0;
 		int m_PrimitiveType = GL_POINTS;
 	};
