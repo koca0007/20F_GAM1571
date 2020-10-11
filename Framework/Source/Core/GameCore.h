@@ -3,6 +3,7 @@
 namespace fw {
 
 	class FWCore;
+	class Event;
 
 class GameCore
 {
@@ -13,7 +14,9 @@ public:
 	virtual void Update(float deltaTime) = 0;
 	virtual void Draw() = 0;
 
-	FWCore* GetFramework();
+	virtual void OnEvent(Event* pEvent) = 0;
+
+	FWCore* GetFramework() { return m_pFramework; }
 
 	FWCore* m_pFramework;
 };

@@ -16,9 +16,4 @@ namespace fw {
 	
 	}
 
-	FWCore* GameCore::GetFramework()
-	{
-		return m_pFramework;
-	}
-
 } // namespace 

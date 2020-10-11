@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Math/Vector.h"
+#include "../Math/Vector.h"
 
 namespace fw {
 
@@ -12,14 +12,22 @@ namespace fw {
 	class GameObject
 	{
 	public:
-		GameObject(Vector2 vec2, Mesh* pMesh, ShaderProgram* pShader, GameCore* pGameCore);
+		GameObject();
+		GameObject(std::string name, Vector2 pos, Mesh* pMesh, ShaderProgram* pShader, GameCore* pGameCore);
 		virtual ~GameObject();
 
-		virtual void Update();
+		virtual void Update(float DeltaTime);
 		virtual void Draw();
 
+		std::string GetName();
+
+		Vector2 GetPosition() { return m_Position; }
+		void SetPosition(Vector2 newPos) { m_Position = newPos; }
+
 	protected:
-		Vector2 position;
+		Vector2 m_Position;
+
+		std::string m_Name;
 
 		Mesh* m_pMesh = nullptr;
 		ShaderProgram* m_pShader = nullptr;

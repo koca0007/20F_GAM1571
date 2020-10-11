@@ -5,6 +5,9 @@ workspace "Game"
 	characterset	"MBCS"
 	startproject	"Game"
 
+	filter "configurations:Debug"
+        symbols     "on"
+
 project "Game"
 	kind		"WindowedApp"
 	location	"build/Game"
@@ -21,14 +24,17 @@ project "Game"
 	}
 
 	includedirs {
-		"Framework/Source",
 		"Game/Source",
+		
 	}
 
 	links {
 		"Framework",
 		"opengl32",
 	}
+
+	pchheader "GamePCH.h"
+	pchsource "Game/Source/WinMain.cpp"
 
 project "Framework"
 	kind		"StaticLib"
@@ -45,3 +51,10 @@ project "Framework"
 		"Framework/Source",
 		"Framework/Libraries/imgui"
 	}
+
+	pchheader "FrameworkPCH.h"
+	pchsource "Framework/Source/Core/FWCore.cpp"
+
+	filter "files:Framework/Libraries/imgui/*.cpp"
+		flags { "NoPCH" }
+

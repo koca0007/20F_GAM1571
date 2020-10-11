@@ -6,15 +6,14 @@ uniform vec2 u_Position;
 
 void main()
 {
-    vec2 aPosition = a_Position;
-    vec2 uPosition = u_Position;
+    vec2 pos = a_Position;
 
-    aPosition /= 5;
-    uPosition = 10;
+    pos *= 1;
+    pos += u_Position;
 
-    vec2 pos = aPosition + u_Position;
-
-
+    // Transform from 0->10 space into -1->1 space:
+    pos /= 5.0;
+    pos -= 1.0;
 
     gl_Position = vec4( pos, 0, 1 );
 }

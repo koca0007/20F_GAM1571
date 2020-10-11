@@ -5,15 +5,17 @@
 #include "Utility/Helpers.h"
 #include "Math/Vector.h"
 
+#include "../../Framework/Libraries/imgui/imgui.h"
+
 namespace fw {
 
 	Mesh::Mesh()
 	{
 	}
 
-	Mesh::Mesh(int primitiveType, int numVertices, float* pVertices)
+	Mesh::Mesh(int primitiveType, int numVertices, const float* pVertices)
 	{
-		CreateShape(primitiveType, numVertices, pVertices);
+
 	}
 
 	Mesh::~Mesh()
@@ -21,7 +23,7 @@ namespace fw {
 		glDeleteBuffers(1, &m_VBO);
 	}
 
-	void Mesh::CreateShape(int primitiveType, int numVertices, float* pVertices)
+	void Mesh::CreateShape(int primitiveType, int numVertices, const float* pVertices)
 	{
 		// Generate a buffer for our vertex attributes.
 		glGenBuffers(1, &m_VBO); // m_VBO is a GLuint.
@@ -35,6 +37,42 @@ namespace fw {
 		// Copy our attribute data into the VBO.
 		int numAttributeComponents = m_NumVertices * 2; // x & y for each vertex.
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numAttributeComponents, pVertices, GL_STATIC_DRAW);
+	}
+
+	void Mesh::CreateCircle(int primitiveType, float radius, unsigned int numVertices, const float* pVertices)
+	{
+		float vertexCount = 0;
+		if (m_VBO != 0)
+			glDeleteBuffers(1, &m_VBO);
+
+		glGenBuffers(1, &m_VBO);
+
+		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+
+		assert(radius > 0.0f);
+
+		double pi = 3.14159265358979323846;
+		double twoPi = pi * 2.0f;
+		float theta = (twoPi / numVertices);
+		float angle = 0;
+
+		std::vector<Vector2> vertices;
+		
+		for (int i = 0; i < numVertices; i++)
+		{
+			Vector2 vertex;
+			vertex.x = (radius * cosf(angle));
+			vertex.y = (radius * sin(angle));
+
+			vertices.push_back(vertex);
+			vertexCount++;
+			angle += theta;
+		}
+
+		m_NumVertices = vertexCount;
+		int numAttributeComponents = vertexCount * 2;
+		m_PrimitiveType = primitiveType;
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numAttributeComponents, &vertices[0], GL_STATIC_DRAW);
 	}
 
 	void Mesh::SetUniform1f(ShaderProgram* pShader, char* name, float value)
@@ -63,7 +101,7 @@ namespace fw {
 		// Describe the attributes in the VBO to OpenGL.
 		glVertexAttribPointer(loc, 2, GL_FLOAT, GL_FALSE, 8, (void*)0);
 
-		// Setup our uniforms.
+		/*Setup our uniforms.*/
 		{
 			/*SetUniform1f(pShader, "u_Time", (float)GetSystemTimeSinceGameStart());*/
 			SetUniform2f(pShader, "u_Position", position);

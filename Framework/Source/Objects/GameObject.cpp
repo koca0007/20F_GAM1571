@@ -7,10 +7,15 @@
 
 namespace fw {
 
-	GameObject::GameObject(Vector2 pVec2, Mesh* pMesh, ShaderProgram* pShader, GameCore* pGameCore)
+	GameObject::GameObject()
 	{
-		position = pVec2;
 
+	}
+
+	GameObject::GameObject(std::string name, Vector2 pos, Mesh* pMesh, ShaderProgram* pShader, GameCore* pGameCore)
+	{
+		m_Name = name;
+		m_Position = pos;
 		m_pMesh = pMesh;
 		m_pShader = pShader;
 		m_GameCore = pGameCore;
@@ -18,15 +23,22 @@ namespace fw {
 
 	GameObject::~GameObject()
 	{
+
 	}
 
-	void GameObject::Update()
+	void GameObject::Update(float DeltaTime)
 	{
 		
 	}
 
 	void GameObject::Draw()
 	{
-		/*m_pMesh->Draw(position, m_pShader);*/
+		m_pMesh->Draw(m_Position, m_pShader);
 	}
+
+	std::string GameObject::GetName()
+	{
+		return m_Name;
+	}
+
 } // namespace fw
