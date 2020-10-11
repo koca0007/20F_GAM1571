@@ -28,12 +28,14 @@ protected:
 	fw::GameCore* m_GameCore;
 
 	class Player* player;
+	class Enemy* enemy;
 
 	std::vector<Player*> m_Players;
 	std::vector<fw::GameObject*> m_Objects;
 	
 	float radius;
 	float numberOfSides;
+	bool isColliding;
 
 	Vector2 vec2;
 };

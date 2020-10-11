@@ -32,8 +32,8 @@ namespace fw
 		Vector2 operator*=(const Vector2& o) { x *= o.x; y *= o.y; return *this; }
 		Vector2 operator/=(const Vector2& o) { x /= o.x; y /= o.y; return *this; }
 
-		
-		
+
+
 
 		float Length() { return sqrtf(SquaredLength()); }
 		float SquaredLength() { return x * x + y * y; }
@@ -49,10 +49,10 @@ namespace fw
 		}
 
 		Vector2 Normalized()
-		{ 
+		{
 			Vector2 vec2 = Vector2(x, y);
-			vec2.Normalize(); 
-			return vec2; 
+			vec2.Normalize();
+			return vec2;
 		}
 
 		float Distance(const Vector2& o) { return sqrtf(SquaredDistance(o)); }
@@ -68,6 +68,6 @@ namespace fw
 		float x = 0;
 		float y = 0;
 
-		
+
 	};
 }

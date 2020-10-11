@@ -15,16 +15,12 @@ namespace fw {
 		virtual ~Mesh();
 
 		void CreateShape(int primitiveType, int numVertices, const float* pVertices);
-		void CreateCircle(int primitiveType, float radius, unsigned int numVertices, const float* pVertices);
+		void CreateCircle(int primitiveType, float radius, unsigned int numVertices);
 
 		void SetUniform1f(ShaderProgram* pShader, char* name, float value);
 		void SetUniform2f(ShaderProgram* pShader, char* name, Vector2 position);
-		
-		void SetPosition(Vector2 pos) { m_Position = pos; }
 
 		void Draw(Vector2 position, ShaderProgram* pShader);
-
-		Vector2 m_Position;
 
 
 	protected:

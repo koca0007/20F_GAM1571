@@ -23,9 +23,10 @@ namespace fw {
 
 		Vector2 GetPosition() { return m_Position; }
 		void SetPosition(Vector2 newPos) { m_Position = newPos; }
+		Vector2 m_Position;
 
 	protected:
-		Vector2 m_Position;
+		
 
 		std::string m_Name;
 

@@ -39,7 +39,7 @@ namespace fw {
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numAttributeComponents, pVertices, GL_STATIC_DRAW);
 	}
 
-	void Mesh::CreateCircle(int primitiveType, float radius, unsigned int numVertices, const float* pVertices)
+	void Mesh::CreateCircle(int primitiveType, float radius, unsigned int numVertices)
 	{
 		float vertexCount = 0;
 		if (m_VBO != 0)
@@ -57,7 +57,7 @@ namespace fw {
 		float angle = 0;
 
 		std::vector<Vector2> vertices;
-		
+
 		for (int i = 0; i < numVertices; i++)
 		{
 			Vector2 vertex;

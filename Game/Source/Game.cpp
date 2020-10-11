@@ -6,6 +6,7 @@
 #include "Objects/Shapes.h"
 #include "Events/GameEvents.h"
 
+
 Game::Game(fw::FWCore* pFramework) : fw::GameCore(pFramework)
 {
 	
@@ -49,12 +50,14 @@ void Game::Init()
 	glLineWidth(9);
 	
 	//Player
-	player = new Player("Player", Vector2(3,5), m_pMeshHuman, m_pShader, this);
+	player = new Player("Player", Vector2(5,5), m_pMeshHuman, m_pShader, this);
 	m_Players.push_back(player);
+
+	
 
 	//m_Objects.push_back(new fw::GameObject("Enemy 3", Vector2(5, 5), m_pMeshAnimal, m_pShader, this));
 	//m_Objects.push_back(new fw::GameObject("Enemy 4", Vector2(1, 1), m_pMeshAnimal, m_pShader, this));
-	m_Objects.push_back(new fw::GameObject("Enemy 5", Vector2(1, 9), m_pMeshAnimal, m_pShader, this));
+	m_Objects.push_back(new fw::GameObject("Enemy 5", Vector2(5, 5), m_pMeshAnimal, m_pShader, this));
 
 	m_Objects.push_back(new fw::GameObject("Circle", Vector2(5, 5), m_Circle, m_pShader, this));
 	
@@ -74,6 +77,11 @@ void Game::OnEvent(fw::Event* pEvent)
 
 		delete pObject;
 	}
+
+	if (pEvent->GetType() == SpawnEnemiesEvent::GetStaticEventType())
+	{
+
+	}
 	
 }
 
@@ -83,7 +91,8 @@ void Game::Update(float deltaTime)
 	ImGui::ShowDemoWindow();
 	m_pEventManager->DispatchAllEvents(this);
 
-	m_Circle->CreateCircle(GL_LINE_LOOP, radius, numberOfSides, meshAttribs_Circle);
+	m_Circle->CreateCircle(GL_LINE_LOOP, radius, numberOfSides);
+	ImGui::SliderFloat("Number of Sides ", &numberOfSides, 3.0f, 100.0f, "%.0f");
 
 	for (Player* pObject : m_Players)
 	{
@@ -107,13 +116,10 @@ void Game::Update(float deltaTime)
 		ImGui::PopID();
 	}
 
-	
-
-	//////////////////////////////////////////
 	double pi = 3.14159265358979323846;
-	double twoPi = pi * 2.0f;
+	double area = pi * radius * radius;
 
-	ImGui::SliderFloat("Number of Sides ", &numberOfSides, 3.0f, 100.0f, "%.0f");
+
 }
 
 void Game::Draw()
