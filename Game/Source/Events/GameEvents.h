@@ -36,3 +36,21 @@ public:
 protected:
 	fw::GameObject* m_pObject = nullptr;
 };
+
+class DeleteEnemiesEvent : public fw::Event
+{
+public:
+	DeleteEnemiesEvent(fw::GameObject* pObject)
+	{
+		m_pObject = pObject;
+	}
+	virtual ~DeleteEnemiesEvent() {}
+
+	static const char* GetStaticEventType() { return "DeleteEnemiesEvent"; }
+	virtual const char* GetType() override { return GetStaticEventType(); }
+
+	fw::GameObject* GetGameObject() { return m_pObject; }
+
+protected:
+	fw::GameObject* m_pObject = nullptr;
+};

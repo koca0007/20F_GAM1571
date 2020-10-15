@@ -32,10 +32,13 @@ protected:
 
 	std::vector<Player*> m_Players;
 	std::vector<fw::GameObject*> m_Objects;
+	std::vector<Enemy*> m_Enemies;
 	
+protected:
 	float radius;
 	float numberOfSides;
 	bool isColliding;
-
+	bool isEnemyDead;
 	Vector2 vec2;
+	bool m_VSyncEnabled = false;
 };

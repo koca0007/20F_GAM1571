@@ -5,11 +5,12 @@
 #include "Objects/Player.h"
 #include "Objects/Shapes.h"
 #include "Events/GameEvents.h"
+#include "Objects/Enemy.h"
 
 
 Game::Game(fw::FWCore* pFramework) : fw::GameCore(pFramework)
 {
-	
+	isEnemyDead = false;
 }
 
 Game::~Game()
@@ -33,6 +34,8 @@ void Game::Init()
 	m_pImGuiManager = new fw::ImGuiManager(m_pFramework);
 	m_pImGuiManager->Init();
 
+
+
 	m_pEventManager = new fw::EventManager();
 
 	m_pShader = new fw::ShaderProgram("Data/Basic.vert", "Data/Basic.frag");
@@ -48,19 +51,20 @@ void Game::Init()
 	numberOfSides = 50;
 	m_Circle = new fw::Mesh();
 	glLineWidth(9);
+	m_Objects.push_back(new fw::GameObject("Circle", Vector2(5, 5), m_Circle, m_pShader, Vector4(1, 0, 0, 1), this));
 	
 	//Player
-	player = new Player("Player", Vector2(5,5), m_pMeshHuman, m_pShader, this);
+	player = new Player("Player", Vector2(5,5), m_pMeshHuman, m_pShader, Vector4(0, 1, 0, 1), this);
 	m_Players.push_back(player);
-
 	
 
 	//m_Objects.push_back(new fw::GameObject("Enemy 3", Vector2(5, 5), m_pMeshAnimal, m_pShader, this));
 	//m_Objects.push_back(new fw::GameObject("Enemy 4", Vector2(1, 1), m_pMeshAnimal, m_pShader, this));
-	m_Objects.push_back(new fw::GameObject("Enemy 5", Vector2(5, 5), m_pMeshAnimal, m_pShader, this));
 
-	m_Objects.push_back(new fw::GameObject("Circle", Vector2(5, 5), m_Circle, m_pShader, this));
-	
+	enemy = new Enemy("Enemy", Vector2(8, 8), m_pMeshHuman, m_pShader, Vector4(0, 0, 1, 1), this, player);
+	m_Enemies.push_back(enemy);
+
+	enemy->SetSpeed(0.5f);
 }
 
 void Game::OnEvent(fw::Event* pEvent)
@@ -80,8 +84,23 @@ void Game::OnEvent(fw::Event* pEvent)
 
 	if (pEvent->GetType() == SpawnEnemiesEvent::GetStaticEventType())
 	{
+		isEnemyDead = false;
 
+		SpawnEnemiesEvent* pSpawnEnemiesEvent = static_cast<SpawnEnemiesEvent*>(pEvent);
+		
+		// HERE
+		auto it = std::find(m_Enemies.begin(), m_Enemies.end(), enemy);
+		
 	}
+
+	if (pEvent->GetType() == DeleteEnemiesEvent::GetStaticEventType())
+	{
+		isEnemyDead = false;
+
+		DeleteEnemiesEvent* pSpawnEnemiesEvent = static_cast<DeleteEnemiesEvent*>(pEvent);
+		fw::GameObject* pObject = pSpawnEnemiesEvent->GetGameObject();
+	}
+
 	
 }
 
@@ -94,32 +113,26 @@ void Game::Update(float deltaTime)
 	m_Circle->CreateCircle(GL_LINE_LOOP, radius, numberOfSides);
 	ImGui::SliderFloat("Number of Sides ", &numberOfSides, 3.0f, 100.0f, "%.0f");
 
-	for (Player* pObject : m_Players)
+	for (Player* pPlayer : m_Players)
 	{
-		pObject->Update(deltaTime);
+		pPlayer->Update(deltaTime);
 	}
 
-	//for (fw::GameObject* pObject : m_Objects)
-	for ( auto it = m_Objects.begin(); it != m_Objects.end(); it++)
+	for (Enemy* pEnemy : m_Enemies)
 	{
-		fw::GameObject* pObject = *it;
+		pEnemy->Update(deltaTime);
+	}
 
-		pObject->Update(deltaTime);
+	/*m_pEventManager->AddEvent(new RemoveFromGameEvent(pObject));*/
 
-		ImGui::PushID(pObject);
-		ImGui::Text("Name: %s", pObject->GetName().c_str());
-		ImGui::SameLine();
-		if (ImGui::Button("Delete"))
+	{
+		//Enable/Disable VSync
+		if (ImGui::Checkbox("V-Sync", &m_VSyncEnabled));
 		{
-			m_pEventManager->AddEvent( new RemoveFromGameEvent( pObject ));
+			wglSwapInterval(m_VSyncEnabled ? 1 : 0);
 		}
-		ImGui::PopID();
+		
 	}
-
-	double pi = 3.14159265358979323846;
-	double area = pi * radius * radius;
-
-
 }
 
 void Game::Draw()
@@ -137,6 +150,12 @@ void Game::Draw()
 	for (fw::GameObject* pObject : m_Objects)
 	{
 		pObject->Draw();
+	}
+
+	for (int i = 0; i < m_Enemies.size(); i++)
+	{
+		if (!isEnemyDead)
+			m_Enemies[i]->Draw();
 	}
 
 	/*m_Circle->Draw(Vector2(5, 5), m_pShader);*/

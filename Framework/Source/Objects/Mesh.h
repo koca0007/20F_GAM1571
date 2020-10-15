@@ -19,8 +19,9 @@ namespace fw {
 
 		void SetUniform1f(ShaderProgram* pShader, char* name, float value);
 		void SetUniform2f(ShaderProgram* pShader, char* name, Vector2 position);
+		void SetUniform4f(ShaderProgram* pShader, char* name, Vector4 color);
 
-		void Draw(Vector2 position, ShaderProgram* pShader);
+		void Draw(Vector2 position, ShaderProgram* pShader, Vector4 color);
 
 
 	protected:

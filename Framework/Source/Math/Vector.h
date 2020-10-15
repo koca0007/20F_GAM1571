@@ -33,8 +33,6 @@ namespace fw
 		Vector2 operator/=(const Vector2& o) { x /= o.x; y /= o.y; return *this; }
 
 
-
-
 		float Length() { return sqrtf(SquaredLength()); }
 		float SquaredLength() { return x * x + y * y; }
 
@@ -69,5 +67,40 @@ namespace fw
 		float y = 0;
 
 
+	};
+
+	class Vector4
+	{
+	public:
+		Vector4() { x = 0; y = 0; z = 0; w = 0; }
+		Vector4(float ax, float ay, float az, float aw) { x = ax; y = ay; z = az; w = aw; }
+
+		static const Vector4 Green()	{ return Vector4(0.0f, 1.0f, 0.0f, 1.0f); }
+		static const Vector4 Red()		{ return Vector4(1.0f, 0.0f, 0.0f, 1.0f); }
+		static const Vector4 Blue()		{ return Vector4(0.0f, 0.0f, 1.0f, 1.0f); }
+		static const Vector4 White()	{ return Vector4(1.0f, 1.0f, 1.0f, 1.0f); }
+		static const Vector4 Black()	{ return Vector4(0.0f, 0.0f, 0.0f, 1.0f); }
+
+	public:
+		union
+		{
+			float x;
+			float r;
+		};
+		union
+		{
+			float y;
+			float g;
+		};
+		union
+		{
+			float z;
+			float b;
+		};
+		union
+		{
+			float w;
+			float a;
+		};
 	};
 }
