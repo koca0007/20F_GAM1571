@@ -24,5 +24,6 @@ public:
 protected:
 	fw::FWCore* framework;
 	float m_Speed;
+	Vector2 lastPos;
 	PlayerController* m_pPlayerController = nullptr;
 };

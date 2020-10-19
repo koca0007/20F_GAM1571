@@ -19,15 +19,19 @@ Game::~Game()
 	delete m_pMeshHuman;
 	delete m_pMeshAnimal;
 	delete m_Circle;
-
-	for (Player* pObject : m_Players)
-	{
-		delete pObject;
-	}
-
 	delete m_pPlayerController;
 	delete m_pImGuiManager;
 	delete m_pEventManager;
+
+	for (Player* player : m_Players)
+	{
+		delete player;
+	}
+
+	for (Enemy* enemy : m_ActiveEnemies)
+	{
+		delete enemy;
+	}
 }
 
 void Game::Init()
@@ -46,10 +50,10 @@ void Game::Init()
 	m_pMeshAnimal->CreateShape(meshPrimType_Enemy, meshNumVerts_Enemy, meshAttribs_Enemy);
 
 	//Circle
-	radius = 4.8f;
+	radius = 4.0f;
 	numberOfSides = 50;
 	m_Circle = new fw::Mesh();
-	glLineWidth(9);
+	
 	m_Objects.push_back(new fw::GameObject("Circle", Vector2(5, 5), m_Circle, m_pShader, Vector4(1, 0, 0, 1), this));
 	
 	m_pPlayerController = new PlayerController();
@@ -78,8 +82,6 @@ void Game::OnEvent(fw::Event* pEvent)
 
 	if (pEvent->GetType() == SpawnEnemiesEvent::GetStaticEventType())
 	{
-		SpawnEnemiesEvent* pSpawnEnemiesEvent = static_cast<SpawnEnemiesEvent*>(pEvent);
-
 		float pi = 3.14159265358979323846;
 		float angle = (rand() % 360) / 1.0f;
 		angle *= (pi / 180.0f);
@@ -115,8 +117,10 @@ void Game::Update(float deltaTime)
 	for (Player* pPlayer : m_Players)
 	{
 		pPlayer->Update(deltaTime);
+
+		ImGui::Text( "x: %f", pPlayer->GetPosition().x);
+		ImGui::Text("y: %f", pPlayer->GetPosition().y);
 	}
-	
 	
 	for (Enemy* pEnemy : m_ActiveEnemies)
 	{
@@ -134,8 +138,7 @@ void Game::Update(float deltaTime)
 	for (auto it = m_ActiveEnemies.begin(); it!= m_ActiveEnemies.end(); it++)
 	{
 		Enemy* go = *it;
-		if (go->GetPosition().x < 0 || go->GetPosition().x > 10
-			|| go->GetPosition().y < 0 || go->GetPosition().y > 10)
+		if (go->GetPosition().Distance(go->GetInitialPosition()) >= (radius * 2.0f) + 0.25f)
 		{
 			m_pEventManager->AddEvent(new DeleteEnemiesEvent(go));
 		}
@@ -163,6 +166,7 @@ void Game::Draw()
 
 	for (fw::GameObject* pObject : m_Objects)
 	{
+		glLineWidth(10);
 		pObject->Draw();
 	}
 
@@ -170,8 +174,6 @@ void Game::Draw()
 	{
 		m_ActiveEnemies[i]->Draw();
 	}
-
-	/*m_Circle->Draw(Vector2(5, 5), m_pShader);*/
 
 	m_pImGuiManager->EndFrame();
 }

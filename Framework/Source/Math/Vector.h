@@ -15,10 +15,10 @@ namespace fw
 		float GetPositionX() { return x; }
 		float GetPositionY() { return y; }
 
-		Vector2 operator+(float o) const { return *this + o; }
-		Vector2 operator-(float o) const { return *this - o; }
+		Vector2 operator+(float o) const { return Vector2(x + o, y + o); }
+		Vector2 operator-(float o) const { return Vector2(x - o, y - o); }
 		Vector2 operator*(float o) const { return Vector2(x * o, y * o); }
-		Vector2 operator/(float o) const { return *this / o; }
+		Vector2 operator/(float o) const { return Vector2(x / o, y / o); }
 
 		Vector2 operator+=(float o) { x += o; y += o; return *this; }
 		Vector2 operator-=(float o) { x -= o; y -= o; return *this; }
@@ -35,7 +35,35 @@ namespace fw
 		Vector2 operator*=(const Vector2& o) { x *= o.x; y *= o.y; return *this; }
 		Vector2 operator/=(const Vector2& o) { x /= o.x; y /= o.y; return *this; }
 
-		
+		bool Vector2::operator==(const Vector2& aVector2) const
+		{
+			return x == aVector2.x && y == aVector2.y;
+		}
+
+		bool Vector2::operator != (const Vector2& aVector2) const
+		{
+			return x != aVector2.x || y != aVector2.y;
+		}
+
+		bool Vector2::operator<(const Vector2& aVector2) const
+		{
+			return (x == aVector2.x) ? (y < aVector2.y) : (x < aVector2.x);
+		}
+
+		bool Vector2::operator<=(const Vector2& aVector2) const
+		{
+			return (x == aVector2.x) ? (y <= aVector2.y) : (x <= aVector2.x);
+		}
+
+		bool Vector2::operator>(const Vector2& aVector2) const
+		{
+			return (x == aVector2.x) ? (y > aVector2.y) : (x > aVector2.x);
+		}
+
+		bool Vector2::operator>=(const Vector2& aVector2) const
+		{
+			return (x == aVector2.x) ? (y >= aVector2.y) : (x >= aVector2.x);
+		}
 
 
 		float Length() { return sqrtf(SquaredLength()); }

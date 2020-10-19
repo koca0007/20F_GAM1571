@@ -7,6 +7,7 @@ Enemy::Enemy(std::string name, Vector2 position, fw::Mesh* mesh, fw::ShaderProgr
 	: fw::GameObject(name, position, mesh, shader, color, gameCore)
 {
 	m_Player = player;
+	initialPosition = position;
 	framework = m_GameCore->GetFramework();
 	direction = m_Player->GetPosition() - GetPosition();
 	

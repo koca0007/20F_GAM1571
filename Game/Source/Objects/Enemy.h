@@ -16,8 +16,7 @@ public:
 
 	void MoveTo(float DeltaTime);
 
-	float GetSpeed() { return m_Speed; }
-	void SetSpeed(float newSpeed) { m_Speed = newSpeed; }
+	Vector2 GetInitialPosition() { return initialPosition; }
 	void Reset();
 
 protected:
@@ -25,6 +24,7 @@ protected:
 	fw::FWCore* framework;
 	bool bMoving = false;
 	Vector2 playerPosition;
+	Vector2 initialPosition;
 	Vector2 direction;
 	float m_Speed;
 };

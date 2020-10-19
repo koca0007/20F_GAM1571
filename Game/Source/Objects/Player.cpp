@@ -26,36 +26,42 @@ void Player::Update(float DeltaTime)
 
 void Player::ApplyMovement(float delta) 
 {
-	Vector2 dir;
-	if (m_pPlayerController->IsUpHeld())
+	Vector2 dir = (Vector2(0, 0));
+
+	lastPos = m_Position;
+
+	if ((GetPosition().Distance(Vector2(5, 5)) > 4.0f))
 	{
-		dir.y = 1;
+		if (m_Position.x > m_Position.y)
+		{
+			m_Position = lastPos - 0.1f;
+			return;
+		}
+		else if (m_Position.y > m_Position.x)
+		{
+			m_Position = lastPos + 0.1f;
+			return;
+		}
 	}
-	if (m_pPlayerController->IsDownHeld()) 
+	else
 	{
-		dir.y = -1;
+		if (m_pPlayerController->IsUpHeld())
+		{
+			dir.y = 1;
+		}
+		if (m_pPlayerController->IsDownHeld())
+		{
+			dir.y = -1;
+		}
+		if (m_pPlayerController->IsLeftHeld())
+		{
+			dir.x = -1;
+		}
+		if (m_pPlayerController->IsRightHeld())
+		{
+			dir.x = 1;
+		}
 	}
-	if (m_pPlayerController->IsLeftHeld()) 
-	{
-		dir.x = -1;
-	}
-	if (m_pPlayerController->IsRightHeld()) 
-	{
-		dir.x = 1;
-	}
-	m_Position += dir * m_Speed * delta;
 	
-
-	float pi = 3.14159265358979323846;
-	float angle = (rand() % 360) / 1.0f;
-	angle *= (pi / 180.0f);
-
-	float x = 4.8f * cosf(angle);
-	float y = 4.8f * sinf(angle);
-
-	if (m_Position.x > x ||  m_Position.x < x || m_Position.y > y || m_Position.y < y)
-	{
-		
-	}
-
+	m_Position += dir * m_Speed * delta;
 }
