@@ -12,6 +12,9 @@ namespace fw
 		void SetY(float o) { y = o; }
 		void SetXY(Vector2 o) { x = o.x, y = o.y; }
 
+		float GetPositionX() { return x; }
+		float GetPositionY() { return y; }
+
 		Vector2 operator+(float o) const { return *this + o; }
 		Vector2 operator-(float o) const { return *this - o; }
 		Vector2 operator*(float o) const { return Vector2(x * o, y * o); }
@@ -31,6 +34,8 @@ namespace fw
 		Vector2 operator-=(const Vector2& o) { x -= o.x; y -= o.y; return *this; }
 		Vector2 operator*=(const Vector2& o) { x *= o.x; y *= o.y; return *this; }
 		Vector2 operator/=(const Vector2& o) { x /= o.x; y /= o.y; return *this; }
+
+		
 
 
 		float Length() { return sqrtf(SquaredLength()); }

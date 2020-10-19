@@ -5,6 +5,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 {
 	fw::FWCore* pFramework = new fw::FWCore();
 	pFramework->Init(600, 600);
+
+	srand((unsigned int)time(NULL));
 	
 	Game* pGame = new Game( pFramework );
 	pGame->Init();

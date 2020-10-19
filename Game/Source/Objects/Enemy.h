@@ -16,10 +16,9 @@ public:
 
 	void MoveTo(float DeltaTime);
 
-	bool IsInUse() { return GetPosition().x < 10 || GetPosition().x > 0 || GetPosition().y < 10 || GetPosition().y > 0; }
-
 	float GetSpeed() { return m_Speed; }
 	void SetSpeed(float newSpeed) { m_Speed = newSpeed; }
+	void Reset();
 
 protected:
 	Player* m_Player;

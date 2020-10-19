@@ -15,6 +15,8 @@
 #include "GL/MyGLContext.h"
 #include "GameCore.h"
 #include "Utility/Helpers.h"
+#include "EventSystem/Event.h"
+#include "EventSystem/EventManager.h"
 
 namespace fw {
 
@@ -37,6 +39,8 @@ namespace fw {
 		m_hDeviceContext = nullptr;
 		m_hInstance = nullptr;
 		m_pMyGLContext = nullptr;
+
+		m_pGame = nullptr;
 
 		for (int i = 0; i < 256; i++)
 		{
@@ -83,6 +87,8 @@ namespace fw {
 		// Main loop.
 		MSG message;
 		bool done = false;
+
+		m_pGame = pGame;
 
 		double previousTime = GetSystemTimeSinceGameStart();
 
@@ -439,13 +445,20 @@ namespace fw {
 		case WM_KEYDOWN:
 		{
 			bool keyWasPressedLastTimeMessageArrived = lParam & (1 << 30);
-
 			if (keyWasPressedLastTimeMessageArrived == false)
 			{
 				if (wParam == VK_ESCAPE && pFWCore->m_EscapeKeyWillQuit)
 					PostQuitMessage(0);
 
 				pFWCore->m_KeyStates[wParam] = true;
+
+				// Send a input event to the event manager.
+				InputEvent* pEvent = new InputEvent(
+					InputEvent::DeviceType::Keyboard,
+					InputEvent::DeviceState::Pressed,
+					(unsigned int)wParam);
+
+				pFWCore->m_pGame->GetEventManager()->AddEvent(pEvent);
 			}
 		}
 		return 0;
@@ -453,6 +466,14 @@ namespace fw {
 		case WM_KEYUP:
 		{
 			pFWCore->m_KeyStates[wParam] = false;
+
+			// Send a input event to the event manager.
+			InputEvent* pEvent = new InputEvent(
+				InputEvent::DeviceType::Keyboard,
+				InputEvent::DeviceState::Released,
+				(unsigned int)wParam);
+
+			pFWCore->m_pGame->GetEventManager()->AddEvent(pEvent);
 		}
 		return 0;
 

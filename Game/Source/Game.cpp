@@ -5,12 +5,12 @@
 #include "Objects/Player.h"
 #include "Objects/Shapes.h"
 #include "Events/GameEvents.h"
+#include "Objects/PlayerController.h"
 #include "Objects/Enemy.h"
 
 
 Game::Game(fw::FWCore* pFramework) : fw::GameCore(pFramework)
 {
-	isEnemyDead = false;
 }
 
 Game::~Game()
@@ -25,6 +25,7 @@ Game::~Game()
 		delete pObject;
 	}
 
+	delete m_pPlayerController;
 	delete m_pImGuiManager;
 	delete m_pEventManager;
 }
@@ -33,8 +34,6 @@ void Game::Init()
 {
 	m_pImGuiManager = new fw::ImGuiManager(m_pFramework);
 	m_pImGuiManager->Init();
-
-
 
 	m_pEventManager = new fw::EventManager();
 
@@ -47,28 +46,23 @@ void Game::Init()
 	m_pMeshAnimal->CreateShape(meshPrimType_Enemy, meshNumVerts_Enemy, meshAttribs_Enemy);
 
 	//Circle
-	radius = 4.5f;
+	radius = 4.8f;
 	numberOfSides = 50;
 	m_Circle = new fw::Mesh();
 	glLineWidth(9);
 	m_Objects.push_back(new fw::GameObject("Circle", Vector2(5, 5), m_Circle, m_pShader, Vector4(1, 0, 0, 1), this));
 	
+	m_pPlayerController = new PlayerController();
+
 	//Player
-	player = new Player("Player", Vector2(5,5), m_pMeshHuman, m_pShader, Vector4(0, 1, 0, 1), this);
+	player = new Player("Player", Vector2(5, 5), m_pPlayerController, m_pMeshHuman, m_pShader, Vector4(0, 1, 0, 1), this);
 	m_Players.push_back(player);
-	
-
-	//m_Objects.push_back(new fw::GameObject("Enemy 3", Vector2(5, 5), m_pMeshAnimal, m_pShader, this));
-	//m_Objects.push_back(new fw::GameObject("Enemy 4", Vector2(1, 1), m_pMeshAnimal, m_pShader, this));
-
-	enemy = new Enemy("Enemy", Vector2(8, 8), m_pMeshHuman, m_pShader, Vector4(0, 0, 1, 1), this, player);
-	m_Enemies.push_back(enemy);
-
-	enemy->SetSpeed(0.5f);
 }
 
 void Game::OnEvent(fw::Event* pEvent)
 {
+	m_pPlayerController->OnEvent(pEvent);
+
 	// Process the event.
 	if ( pEvent->GetType() == RemoveFromGameEvent::GetStaticEventType() )
 	{
@@ -84,24 +78,29 @@ void Game::OnEvent(fw::Event* pEvent)
 
 	if (pEvent->GetType() == SpawnEnemiesEvent::GetStaticEventType())
 	{
-		isEnemyDead = false;
-
 		SpawnEnemiesEvent* pSpawnEnemiesEvent = static_cast<SpawnEnemiesEvent*>(pEvent);
-		
-		// HERE
-		auto it = std::find(m_Enemies.begin(), m_Enemies.end(), enemy);
-		
+
+		float pi = 3.14159265358979323846;
+		float angle = (rand() % 360) / 1.0f;
+		angle *= (pi / 180.0f);
+
+		float x = radius * cosf(angle) + 5.0f;
+		float y = radius * sinf(angle) + 5.0f;
+
+		Enemy* enemy = new Enemy("Enemy", Vector2(x, y), m_pMeshHuman, m_pShader, Vector4(0, 0, 1, 1), this, player);
+		m_ActiveEnemies.push_back(enemy);
 	}
 
 	if (pEvent->GetType() == DeleteEnemiesEvent::GetStaticEventType())
 	{
-		isEnemyDead = false;
-
 		DeleteEnemiesEvent* pSpawnEnemiesEvent = static_cast<DeleteEnemiesEvent*>(pEvent);
-		fw::GameObject* pObject = pSpawnEnemiesEvent->GetGameObject();
-	}
+		Enemy* pEnemy = pSpawnEnemiesEvent->GetEnemy();
 
-	
+		auto it = std::find(m_ActiveEnemies.begin(), m_ActiveEnemies.end(), pEnemy);
+		m_ActiveEnemies.erase(it);
+
+		delete pEnemy;
+	}
 }
 
 void Game::Update(float deltaTime)
@@ -110,28 +109,42 @@ void Game::Update(float deltaTime)
 	ImGui::ShowDemoWindow();
 	m_pEventManager->DispatchAllEvents(this);
 
-	m_Circle->CreateCircle(GL_LINE_LOOP, radius, numberOfSides);
+	m_Circle->CreateCircle(GL_LINE_LOOP, radius, (unsigned int)numberOfSides);
 	ImGui::SliderFloat("Number of Sides ", &numberOfSides, 3.0f, 100.0f, "%.0f");
 
 	for (Player* pPlayer : m_Players)
 	{
 		pPlayer->Update(deltaTime);
 	}
-
-	for (Enemy* pEnemy : m_Enemies)
+	
+	
+	for (Enemy* pEnemy : m_ActiveEnemies)
 	{
 		pEnemy->Update(deltaTime);
 	}
 
-	/*m_pEventManager->AddEvent(new RemoveFromGameEvent(pObject));*/
-
+	timePassed += deltaTime;
+	if (timePassed >= 1.0f)
 	{
-		//Enable/Disable VSync
-		if (ImGui::Checkbox("V-Sync", &m_VSyncEnabled));
-		{
-			wglSwapInterval(m_VSyncEnabled ? 1 : 0);
-		}
+		m_pEventManager->AddEvent(new SpawnEnemiesEvent());
+		timePassed = 0;
+	}
 		
+	// Delete when the enemy[i] is out of bounds
+	for (auto it = m_ActiveEnemies.begin(); it!= m_ActiveEnemies.end(); it++)
+	{
+		Enemy* go = *it;
+		if (go->GetPosition().x < 0 || go->GetPosition().x > 10
+			|| go->GetPosition().y < 0 || go->GetPosition().y > 10)
+		{
+			m_pEventManager->AddEvent(new DeleteEnemiesEvent(go));
+		}
+	}		
+	
+	//Enable/Disable VSync
+	if (ImGui::Checkbox("VSync", &m_VSyncEnabled))
+	{
+		wglSwapInterval(m_VSyncEnabled ? 1 : 0);
 	}
 }
 
@@ -140,25 +153,38 @@ void Game::Draw()
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	glPointSize(10);
 
-	for (Player* pObject : m_Players)
+	for (Player* pPlayer : m_Players)
 	{
-		pObject->Draw();
+		glPointSize(10);
+		pPlayer->Draw();
 	}
+	glPointSize(20);
 
 	for (fw::GameObject* pObject : m_Objects)
 	{
 		pObject->Draw();
 	}
 
-	for (int i = 0; i < m_Enemies.size(); i++)
+	for (int i = 0; i < m_ActiveEnemies.size(); i++)
 	{
-		if (!isEnemyDead)
-			m_Enemies[i]->Draw();
+		m_ActiveEnemies[i]->Draw();
 	}
 
 	/*m_Circle->Draw(Vector2(5, 5), m_pShader);*/
 
 	m_pImGuiManager->EndFrame();
+}
+
+bool Game::IsOutOfBounds()
+{
+	for (int i = 0; i < m_ActiveEnemies.size(); i++)
+	{
+		if (m_ActiveEnemies[i]->m_Position.x < 0 || m_ActiveEnemies[i]->m_Position.x > 10
+			|| m_ActiveEnemies[i]->m_Position.y < 0 || m_ActiveEnemies[i]->m_Position.y > 10)
+		{
+			return true;
+		}
+	}
+	return false;
 }

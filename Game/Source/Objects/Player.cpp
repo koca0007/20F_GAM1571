@@ -1,15 +1,17 @@
 #include "GamePCH.h"
 
 #include "Player.h"
-#include "../../Framework/Libraries/imgui/imgui.h"
+#include "Objects/PlayerController.h"
 #include "Game.h"
 
 
-Player::Player(std::string name, Vector2 pPosition, fw::Mesh* pMesh, fw::ShaderProgram* pShader, Vector4 color, fw::GameCore* pGameCore)
+Player::Player(std::string name, Vector2 pPosition, PlayerController* pPlayerController, fw::Mesh* pMesh, fw::ShaderProgram* pShader, 
+																								Vector4 color, fw::GameCore* pGameCore)
 	: fw::GameObject(name, pPosition, pMesh, pShader, color, pGameCore)
 {
 	framework = m_GameCore->GetFramework();
-	m_StartPosition = pPosition;
+	m_pPlayerController = pPlayerController;
+	m_Speed = 4.0f;
 }
 
 Player::~Player()
@@ -25,27 +27,35 @@ void Player::Update(float DeltaTime)
 void Player::ApplyMovement(float delta) 
 {
 	Vector2 dir;
-	if (m_GameCore->GetFramework()->IsKeyDown('D'))
-	{
-		dir.x = 1;
-	}
-	if (framework->IsKeyDown('A')) 
-	{
-		dir.x = -1;
-	}
-	if (framework->IsKeyDown('W')) 
+	if (m_pPlayerController->IsUpHeld())
 	{
 		dir.y = 1;
 	}
-	if (framework->IsKeyDown('S')) 
+	if (m_pPlayerController->IsDownHeld()) 
 	{
 		dir.y = -1;
+	}
+	if (m_pPlayerController->IsLeftHeld()) 
+	{
+		dir.x = -1;
+	}
+	if (m_pPlayerController->IsRightHeld()) 
+	{
+		dir.x = 1;
 	}
 	m_Position += dir * m_Speed * delta;
 	
 
-	//Deal with collision with environment
+	float pi = 3.14159265358979323846;
+	float angle = (rand() % 360) / 1.0f;
+	angle *= (pi / 180.0f);
+
+	float x = 4.8f * cosf(angle);
+	float y = 4.8f * sinf(angle);
+
+	if (m_Position.x > x ||  m_Position.x < x || m_Position.y > y || m_Position.y < y)
 	{
-		//static_cast<Game*>( m_pGameCore )->
+		
 	}
+
 }

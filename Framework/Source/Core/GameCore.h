@@ -3,6 +3,7 @@
 namespace fw {
 
 	class FWCore;
+	class EventManager;
 	class Event;
 
 class GameCore
@@ -17,8 +18,12 @@ public:
 	virtual void OnEvent(Event* pEvent) = 0;
 
 	FWCore* GetFramework() { return m_pFramework; }
+	EventManager* GetEventManager() { return m_pEventManager; }
 
-	FWCore* m_pFramework;
+protected:
+	FWCore* m_pFramework = nullptr;
+
+	EventManager* m_pEventManager = nullptr;
 };
 
 }
