@@ -38,9 +38,7 @@ void Game::Init()
 {
 	m_pImGuiManager = new fw::ImGuiManager(m_pFramework);
 	m_pImGuiManager->Init();
-
 	m_pEventManager = new fw::EventManager();
-
 	m_pShader = new fw::ShaderProgram("Data/Basic.vert", "Data/Basic.frag");
 
 	m_pMeshHuman = new fw::Mesh();
@@ -50,16 +48,15 @@ void Game::Init()
 	m_pMeshAnimal->CreateShape(meshPrimType_Enemy, meshNumVerts_Enemy, meshAttribs_Enemy);
 
 	//Circle
-	radius = 4.0f;
+	radius = 4.5f;
 	numberOfSides = 50;
 	m_Circle = new fw::Mesh();
-	
-	m_Objects.push_back(new fw::GameObject("Circle", Vector2(5, 5), m_Circle, m_pShader, Vector4(1, 0, 0, 1), this));
+	m_Objects.push_back(new fw::GameObject("Circle", Vector2(5, 5), m_Circle, m_pShader, Vector4::Red(), this));
 	
 	m_pPlayerController = new PlayerController();
 
 	//Player
-	player = new Player("Player", Vector2(5, 5), m_pPlayerController, m_pMeshHuman, m_pShader, Vector4(0, 1, 0, 1), this);
+	player = new Player("Player", Vector2(5, 5), m_pPlayerController, m_pMeshHuman, m_pShader, Vector4::Green(), this);
 	m_Players.push_back(player);
 }
 
@@ -89,7 +86,7 @@ void Game::OnEvent(fw::Event* pEvent)
 		float x = radius * cosf(angle) + 5.0f;
 		float y = radius * sinf(angle) + 5.0f;
 
-		Enemy* enemy = new Enemy("Enemy", Vector2(x, y), m_pMeshHuman, m_pShader, Vector4(0, 0, 1, 1), this, player);
+		Enemy* enemy = new Enemy("Enemy", Vector2(x, y), m_pMeshHuman, m_pShader, Vector4::Blue(), this, player);
 		m_ActiveEnemies.push_back(enemy);
 	}
 
@@ -128,7 +125,7 @@ void Game::Update(float deltaTime)
 	}
 
 	timePassed += deltaTime;
-	if (timePassed >= 1.0f)
+	if (timePassed >= (rand() % 2) + 0.8f)
 	{
 		m_pEventManager->AddEvent(new SpawnEnemiesEvent());
 		timePassed = 0;

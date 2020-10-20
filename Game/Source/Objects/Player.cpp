@@ -12,7 +12,7 @@ Player::Player(std::string name, Vector2 pPosition, PlayerController* pPlayerCon
 	framework = m_GameCore->GetFramework();
 	m_pPlayerController = pPlayerController;
 	m_Speed = 4.0f;
-	initialPos = pPosition;
+	spawnLoc = pPosition;
 }
 
 Player::~Player()
@@ -29,13 +29,11 @@ void Player::ApplyMovement(float delta)
 {
 	Vector2 dir = (Vector2(0, 0));
 
-	Vector2 newLoc = m_Position - Vector2(5, 5);
+	Vector2 newLoc = m_Position - spawnLoc;
 
-	if ((GetPosition().Distance(initialPos) >= 4.0f))
+	if ((GetPosition().Distance(spawnLoc) >= 4.5f))
 	{
-		m_Position = newLoc.Normalized() * 4.0f + initialPos;
-		
-		
+		m_Position = newLoc.Normalized() * 4.5f + spawnLoc;
 	}
 	
 	if (m_pPlayerController->IsUpHeld())

@@ -25,6 +25,6 @@ protected:
 	fw::FWCore* framework;
 	float m_Speed;
 	Vector2 lastPos;
-	Vector2 initialPos;
+	Vector2 spawnLoc;
 	PlayerController* m_pPlayerController = nullptr;
 };

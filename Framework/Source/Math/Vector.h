@@ -113,6 +113,7 @@ namespace fw
 		static const Vector4 Blue()		{ return Vector4(0.0f, 0.0f, 1.0f, 1.0f); }
 		static const Vector4 White()	{ return Vector4(1.0f, 1.0f, 1.0f, 1.0f); }
 		static const Vector4 Black()	{ return Vector4(0.0f, 0.0f, 0.0f, 1.0f); }
+		static const Vector4 Orange()	{ return Vector4(1.0f, 0.40f, 0.0f, 1.0f); }
 
 	public:
 		union
