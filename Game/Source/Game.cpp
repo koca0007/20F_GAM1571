@@ -156,6 +156,11 @@ void Game::Draw()
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT);
 
+	for (fw::GameObject* pObject : m_Objects)
+	{
+		glLineWidth(10);
+		pObject->Draw();
+	}
 
 	for (Player* pPlayer : m_Players)
 	{
@@ -164,11 +169,7 @@ void Game::Draw()
 	}
 	glPointSize(20);
 
-	for (fw::GameObject* pObject : m_Objects)
-	{
-		glLineWidth(10);
-		pObject->Draw();
-	}
+	
 
 	for (int i = 0; i < m_ActiveEnemies.size(); i++)
 	{

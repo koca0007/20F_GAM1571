@@ -12,7 +12,7 @@
 
 float meshAttribs_Human[] =
 {
-	0.0f, 0.7f
+	0.0f, 0.0f
 };
 
 int meshPrimType_Human = GL_POINTS;
@@ -20,19 +20,9 @@ int meshNumVerts_Human = 1;
 
 float meshAttribs_Enemy[] =
 {
-	0.3f,  0.5f, // Center
+	0.0f, 0.0f, 
 	
 };
 
 int meshPrimType_Enemy = GL_POINTS;
 int meshNumVerts_Enemy = 1;
-
-float meshAttribs_Circle[] =
-{
-	0.0f,  0.4f, 
-	0.2f, 0.3f,
-	0.15f, 0.18f,
-	0.05f, -0.10f,
-	-0.10f, -0.08f,
-	-0.12f, 0.14f
-};

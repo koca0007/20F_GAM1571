@@ -12,6 +12,7 @@ Player::Player(std::string name, Vector2 pPosition, PlayerController* pPlayerCon
 	framework = m_GameCore->GetFramework();
 	m_pPlayerController = pPlayerController;
 	m_Speed = 4.0f;
+	initialPos = pPosition;
 }
 
 Player::~Player()
@@ -28,39 +29,30 @@ void Player::ApplyMovement(float delta)
 {
 	Vector2 dir = (Vector2(0, 0));
 
-	lastPos = m_Position;
+	Vector2 newLoc = m_Position - Vector2(5, 5);
 
-	if ((GetPosition().Distance(Vector2(5, 5)) > 4.0f))
+	if ((GetPosition().Distance(initialPos) >= 4.0f))
 	{
-		if (m_Position.x > m_Position.y)
-		{
-			m_Position = lastPos - 0.1f;
-			return;
-		}
-		else if (m_Position.y > m_Position.x)
-		{
-			m_Position = lastPos + 0.1f;
-			return;
-		}
+		m_Position = newLoc.Normalized() * 4.0f + initialPos;
+		
+		
 	}
-	else
+	
+	if (m_pPlayerController->IsUpHeld())
 	{
-		if (m_pPlayerController->IsUpHeld())
-		{
-			dir.y = 1;
-		}
-		if (m_pPlayerController->IsDownHeld())
-		{
-			dir.y = -1;
-		}
-		if (m_pPlayerController->IsLeftHeld())
-		{
-			dir.x = -1;
-		}
-		if (m_pPlayerController->IsRightHeld())
-		{
-			dir.x = 1;
-		}
+		dir.y = 1;
+	}
+	if (m_pPlayerController->IsDownHeld())
+	{
+		dir.y = -1;
+	}
+	if (m_pPlayerController->IsLeftHeld())
+	{
+		dir.x = -1;
+	}
+	if (m_pPlayerController->IsRightHeld())
+	{
+		dir.x = 1;
 	}
 	
 	m_Position += dir * m_Speed * delta;

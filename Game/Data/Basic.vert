@@ -14,6 +14,5 @@ void main()
     offset /= 5.0;
     pos += offset;
    
-
     gl_Position = vec4( pos, 0, 1 );
 }

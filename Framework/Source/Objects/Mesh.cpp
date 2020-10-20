@@ -62,7 +62,7 @@ namespace fw {
 		{
 			Vector2 vertex;
 			vertex.x = (radius * cosf(angle));
-			vertex.y = (radius * sin(angle));
+			vertex.y = (radius * sinf(angle));
 
 			vertices.push_back(vertex);
 			vertexCount++;
@@ -101,7 +101,7 @@ namespace fw {
 		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 
 		// Get the attribute variable’s location from the shader.
-		GLint loc = 0; //glGetAttribLocation( m_pShader->m_Program, "a_Position" );
+		GLint loc = glGetAttribLocation( pShader->GetProgram(), "a_Position" );
 		glEnableVertexAttribArray(loc);
 
 		// Describe the attributes in the VBO to OpenGL.
