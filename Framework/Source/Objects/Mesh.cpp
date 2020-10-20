@@ -7,6 +7,8 @@
 
 #include "../../Framework/Libraries/imgui/imgui.h"
 
+#define PI 3.1415926535897932384626433832795028841971693993751058209749445923078164062
+
 namespace fw {
 
 	Mesh::Mesh()
@@ -51,8 +53,7 @@ namespace fw {
 
 		assert(radius > 0.0f);
 
-		double pi = 3.14159265358979323846;
-		float twoPi = pi * 2.0f;
+		float twoPi = (float)PI * 2.0f;
 		float theta = (twoPi / numVertices);
 		float angle = 0;
 

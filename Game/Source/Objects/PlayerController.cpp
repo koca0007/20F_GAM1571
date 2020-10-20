@@ -20,18 +20,18 @@ void PlayerController::OnEvent(fw::Event* pEvent)
 		{
 			if (pInputEvent->GetDeviceState() == fw::InputEvent::DeviceState::Pressed)
 			{
-				if (pInputEvent->GetKeyCode() == 'W') { m_Up = true; }
-				if (pInputEvent->GetKeyCode() == 'S') { m_Down = true; }
-				if (pInputEvent->GetKeyCode() == 'A') { m_Left = true; }
-				if (pInputEvent->GetKeyCode() == 'D') { m_Right = true; }
+				if (pInputEvent->GetKeyCode() == 'W') { m_Flags |= Up;	  }
+				if (pInputEvent->GetKeyCode() == 'S') { m_Flags |= Down;  }
+				if (pInputEvent->GetKeyCode() == 'A') { m_Flags |= Left;  }
+				if (pInputEvent->GetKeyCode() == 'D') { m_Flags |= Right; }
 			}
 
 			if (pInputEvent->GetDeviceState() == fw::InputEvent::DeviceState::Released)
 			{
-				if (pInputEvent->GetKeyCode() == 'W') { m_Up = false; }
-				if (pInputEvent->GetKeyCode() == 'S') { m_Down = false; }
-				if (pInputEvent->GetKeyCode() == 'A') { m_Left = false; }
-				if (pInputEvent->GetKeyCode() == 'D') { m_Right = false; }
+				if (pInputEvent->GetKeyCode() == 'W') { m_Flags &= ~Up; }
+				if (pInputEvent->GetKeyCode() == 'S') { m_Flags &= ~Down; }
+				if (pInputEvent->GetKeyCode() == 'A') { m_Flags &= ~Left; }
+				if (pInputEvent->GetKeyCode() == 'D') { m_Flags &= ~Right; }
 			}
 		}
 	}

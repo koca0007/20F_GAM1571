@@ -8,9 +8,12 @@
 #include "Objects/PlayerController.h"
 #include "Objects/Enemy.h"
 
+#define PI 3.1415926535897932384626433832795028841971693993751058209749445923078164062
+
 
 Game::Game(fw::FWCore* pFramework) : fw::GameCore(pFramework)
 {
+	wglSwapInterval(m_VSyncEnabled ? 1 : 0);
 }
 
 Game::~Game()
@@ -79,9 +82,9 @@ void Game::OnEvent(fw::Event* pEvent)
 
 	if (pEvent->GetType() == SpawnEnemiesEvent::GetStaticEventType())
 	{
-		float pi = 3.14159265358979323846;
+		
 		float angle = (rand() % 360) / 1.0f;
-		angle *= (pi / 180.0f);
+		angle *= (float)(PI / 180.0f);
 
 		float x = radius * cosf(angle) + 5.0f;
 		float y = radius * sinf(angle) + 5.0f;
@@ -110,6 +113,7 @@ void Game::Update(float deltaTime)
 
 	m_Circle->CreateCircle(GL_LINE_LOOP, radius, (unsigned int)numberOfSides);
 	ImGui::SliderFloat("Number of Sides ", &numberOfSides, 3.0f, 100.0f, "%.0f");
+	ImGui::SliderFloat("Radius ", &radius, 2.0f, 5.0f, "%.2f");
 
 	for (Player* pPlayer : m_Players)
 	{
@@ -164,27 +168,12 @@ void Game::Draw()
 		glPointSize(10);
 		pPlayer->Draw();
 	}
-	glPointSize(20);
-
-	
 
 	for (int i = 0; i < m_ActiveEnemies.size(); i++)
 	{
+		glPointSize(20);
 		m_ActiveEnemies[i]->Draw();
 	}
 
 	m_pImGuiManager->EndFrame();
-}
-
-bool Game::IsOutOfBounds()
-{
-	for (int i = 0; i < m_ActiveEnemies.size(); i++)
-	{
-		if (m_ActiveEnemies[i]->m_Position.x < 0 || m_ActiveEnemies[i]->m_Position.x > 10
-			|| m_ActiveEnemies[i]->m_Position.y < 0 || m_ActiveEnemies[i]->m_Position.y > 10)
-		{
-			return true;
-		}
-	}
-	return false;
 }

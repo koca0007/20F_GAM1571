@@ -39,18 +39,10 @@ protected:
 	fw::GameCore* m_GameCore = nullptr;
 
 	Player* player;
-	Enemy* enemy1;
-	Enemy* enemy2;
-	Enemy* enemy3;
-	Enemy* enemy4;
-	Enemy* enemy5;
 
 	PlayerController* m_pPlayerController = nullptr;
 
 	std::vector<Player*> m_Players;
 	std::vector<fw::GameObject*> m_Objects;
 	std::vector<Enemy*> m_ActiveEnemies;
-
-protected:
-	bool IsOutOfBounds();
 };

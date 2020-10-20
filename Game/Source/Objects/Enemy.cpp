@@ -31,10 +31,3 @@ void Enemy::MoveTo(float DeltaTime)
 		m_Position += direction.Normalized() * m_Speed * DeltaTime;
 	}
 }
-
-void Enemy::Reset()
-{
-	direction = m_Player->GetPosition() - GetPosition();
-	m_Speed = rand() % 1 + 0.35f;
-	m_Position = Vector2(rand() % 5, rand() % 5);
-}

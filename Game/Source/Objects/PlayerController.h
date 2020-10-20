@@ -3,19 +3,24 @@
 class PlayerController
 {
 public:
+	enum MyEnum
+	{
+		Up =	1,
+		Down =	2,
+		Left =	4,
+		Right = 8,
+	};
+
 	PlayerController();
 	virtual ~PlayerController();
 
 	void OnEvent(fw::Event* pEvent);
 
-	bool IsUpHeld() { return m_Up; }
-	bool IsDownHeld() { return m_Down; }
-	bool IsLeftHeld() { return m_Left; }
-	bool IsRightHeld() { return m_Right; }
+	bool IsUpHeld()		{ return (m_Flags & Up) > 0; }
+	bool IsDownHeld()	{ return (m_Flags & Down) > 0; }
+	bool IsLeftHeld()	{ return (m_Flags & Left) > 0; }
+	bool IsRightHeld()	{ return (m_Flags & Right) > 0; }
 
 protected:
-	bool m_Up = false;
-	bool m_Down = false;
-	bool m_Left = false;
-	bool m_Right = false;
+	unsigned int m_Flags = 0;
 };
