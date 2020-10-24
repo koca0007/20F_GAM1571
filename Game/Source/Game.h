@@ -7,6 +7,20 @@ class PlayerController;
 class Player;
 class Enemy;
 
+enum Levels
+{
+	Level1,
+	Level2,
+	Level3,
+};
+
+enum GameStates
+{
+	Running,
+	Loss,
+	Win,
+};
+
 class Game : public fw::GameCore
 {
 public:
@@ -21,8 +35,15 @@ public:
 	virtual void Update(float deltaTime) override;
 	virtual void Draw() override;
 
+	void HandleLevels(float deltaTime);
+	void SpawnEnemies(float deltaTime);
+	void DeleteEnemies();
+	void HandlePlayerLoss();
+
+
 	float m_Radius;
 protected:
+	
 	
 	float numberOfSides;
 	bool isColliding = false;
@@ -35,7 +56,10 @@ protected:
 	int health = 2;
 	bool bGameOver = false;
 
-protected:
+	Levels currentLevel;
+	GameStates gameState;
+	float m_LevelTimer;
+
 	fw::ImGuiManager* m_pImGuiManager = nullptr;
 	fw::ShaderProgram* m_pShader = nullptr;
 	fw::Mesh* m_pMeshHuman = nullptr;

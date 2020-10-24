@@ -19,7 +19,6 @@ protected:
 	fw::GameObject* m_pObject = nullptr;
 };
 
-
 class SpawnEnemiesEvent : public fw::Event
 {
 public:
@@ -37,7 +36,6 @@ public:
 protected:
 	fw::GameObject* m_pObject = nullptr;
 };
-
 
 class DeleteEnemiesEvent : public fw::Event
 {
@@ -85,7 +83,6 @@ public:
 	static const char* GetStaticEventType() { return "PlayerDeathEvent"; }
 	virtual const char* GetType() override { return GetStaticEventType(); }
 
-	/*Enemy* GetEnemy() { return m_Enemy; }*/
 	Player* GetPlayer() { return m_Player; }
 
 protected:
@@ -102,7 +99,6 @@ public:
 		m_Player = player;
 	}
 	virtual ~RestartGameEvent() {}
-	Player* GetPlayer() { return m_Player; }
 
 	static const char* GetStaticEventType() { return "RestartGameEvent"; }
 	virtual const char* GetType() override { return GetStaticEventType(); }

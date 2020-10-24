@@ -69,7 +69,7 @@ namespace fw {
 		m_WindowHeight = height;
 
 		// Create Our OpenGL Window.
-		if (!CreateGLWindow("OpenGL Window", width, height, 32, 0, 24, 8, 1, m_FullscreenMode))
+		if (!CreateGLWindow("Game", width, height, 32, 0, 24, 8, 1, m_FullscreenMode))
 		{
 			PostQuitMessage(0);
 			return false;

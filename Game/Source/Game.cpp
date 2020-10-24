@@ -85,6 +85,10 @@ void Game::Init()
 	m_Players.push_back(player);
 
 	m_Circle->CreateCircle(GL_LINE_LOOP, m_Radius, (unsigned int)numberOfSides);
+
+	currentLevel = Level1;
+	gameState = Running;
+	m_LevelTimer = 0.0f;
 }
 
 void Game::OnEvent(fw::Event* pEvent)
@@ -146,7 +150,6 @@ void Game::OnEvent(fw::Event* pEvent)
 	if (pEvent->GetType() == RestartGameEvent::GetStaticEventType())
 	{
 		RestartGameEvent* pRestartGameEvent = static_cast<RestartGameEvent*>(pEvent);
-		Player* pPlayer = pRestartGameEvent->GetPlayer();
 		
 		player = new Player("Player", Vector2(5, 5), m_pPlayerController, m_pMeshHuman, m_pShader, Vector4::Green(), this);
 		m_Players.push_back(player);
@@ -166,6 +169,11 @@ void Game::Update(float deltaTime)
 		//ImGui::ShowDemoWindow();
 		//ImGui::SliderFloat("Number of Sides ", &numberOfSides, 3.0f, 100.0f, "%.0f");
 		//ImGui::SliderFloat("Radius ", &m_Radius, 2.0f, 5.0f, "%.2f");
+
+		/*if (ImGui::Checkbox("VSync", &m_VSyncEnabled))
+		{
+			wglSwapInterval(m_VSyncEnabled ? 1 : 0);
+		}*/
 	}
 
 	for (Enemy* pEnemy : m_ActiveEnemies)
@@ -173,49 +181,26 @@ void Game::Update(float deltaTime)
 		pEnemy->Update(deltaTime);
 	}
 
-	if (!bGameOver)
+	if (gameState == Running)
 	{
 		for (Player* pPlayer : m_Players)
 		{
 			pPlayer->Update(deltaTime);
 		}
 
-		// Spawn enemies
-		timePassed += deltaTime;
-		if (timePassed >= (rand() % 2) + 0.8f)
-		{
-			m_pEventManager->AddEvent(new SpawnEnemiesEvent());
-			timePassed = 0;
-		}
-
-		// Delete when the enemy[i] is out of bounds
-		for (auto it = m_ActiveEnemies.begin(); it != m_ActiveEnemies.end(); it++)
-		{
-			Enemy* enemy = *it;
-
-			if (enemy->GetPosition().Distance(enemy->GetInitialPosition()) >= (m_Radius * 2.0f))
-			{
-				m_pEventManager->AddEvent(new DeleteEnemiesEvent(enemy));
-			}
-
-			if (player->GetPosition().Distance(enemy->GetPosition()) <= 0.25f)
-			{
-				m_pEventManager->AddEvent(new PlayerDeathEvent(player));
-				bGameOver = true;
-			}
-		}
-
-		if (ImGui::Checkbox("VSync", &m_VSyncEnabled))
-		{
-			wglSwapInterval(m_VSyncEnabled ? 1 : 0);
-		}
-	} // !bGameOver
-	else
+		SpawnEnemies(deltaTime);
+		HandleLevels(deltaTime);
+		DeleteEnemies();
+		HandlePlayerLoss();
+	}
+	else if (gameState == Loss)
 	{
 		if (m_pPlayerController->IsHeld(PlayerController::Mask::Restart))
 		{
-			bGameOver = false;
+			gameState = Running;
+			currentLevel = Level1;
 			m_pEventManager->AddEvent(new RestartGameEvent(player));
+			m_LevelTimer = 0;
 		}
 	}
 }
@@ -244,4 +229,55 @@ void Game::Draw()
 	}
 
 	m_pImGuiManager->EndFrame();
+}
+
+void Game::HandleLevels(float deltaTime)
+{
+	m_LevelTimer += deltaTime;
+	if (currentLevel == Level1)
+	{
+		ImGui::Text("LEVEL 1");
+		if (m_LevelTimer >= 5.0f)
+		{
+			gameState = Win;
+			m_LevelTimer = 0;
+		}
+	}
+}
+
+void Game::SpawnEnemies(float deltaTime)
+{
+	timePassed += deltaTime;
+	if (timePassed >= (rand() % 2) + 0.8f)
+	{
+		m_pEventManager->AddEvent(new SpawnEnemiesEvent());
+		timePassed = 0;
+	}
+}
+
+void Game::DeleteEnemies()
+{
+	for (auto it = m_ActiveEnemies.begin(); it != m_ActiveEnemies.end(); it++)
+	{
+		Enemy* enemy = *it;
+
+		if (enemy->GetPosition().Distance(enemy->GetInitialPosition()) >= (m_Radius * 2.0f))
+		{
+			m_pEventManager->AddEvent(new DeleteEnemiesEvent(enemy));
+		}
+	}
+}
+
+void Game::HandlePlayerLoss()
+{
+	for (auto it = m_ActiveEnemies.begin(); it != m_ActiveEnemies.end(); it++)
+	{
+		Enemy* enemy = *it;
+
+		if (player->GetPosition().Distance(enemy->GetPosition()) <= 0.25f)
+		{
+			m_pEventManager->AddEvent(new PlayerDeathEvent(player));
+			gameState = Loss;
+		}
+	}
 }
