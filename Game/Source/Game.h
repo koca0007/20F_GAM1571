@@ -15,13 +15,15 @@ public:
 
 	void Init();
 	
+	virtual void StartFrame(float deltaTime) override;
 	virtual void OnEvent(fw::Event* pEvent) override;
+	
 	virtual void Update(float deltaTime) override;
 	virtual void Draw() override;
 
-
+	float m_Radius;
 protected:
-	float radius;
+	
 	float numberOfSides;
 	bool isColliding = false;
 	Vector2 vec2;
@@ -29,6 +31,9 @@ protected:
 
 	float timeToSpawn = 4;
 	float timePassed = 0;
+
+	int health = 2;
+	bool bGameOver = false;
 
 protected:
 	fw::ImGuiManager* m_pImGuiManager = nullptr;

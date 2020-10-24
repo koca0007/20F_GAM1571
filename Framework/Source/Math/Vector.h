@@ -2,6 +2,12 @@
 
 namespace fw
 {
+	inline bool fequal(float a, float b, float epsilon = 0.000001f)
+	{
+		return (fabsf(a - b) < epsilon);
+	}
+			
+	
 	class Vector2
 	{
 	public:
@@ -20,10 +26,10 @@ namespace fw
 		Vector2 operator*(float o) const { return Vector2(x * o, y * o); }
 		Vector2 operator/(float o) const { return Vector2(x / o, y / o); }
 
-		Vector2 operator+=(float o) { x += o; y += o; return *this; }
-		Vector2 operator-=(float o) { x -= o; y -= o; return *this; }
-		Vector2 operator*=(float o) { x *= o; y *= o; return *this; }
-		Vector2 operator/=(float o) { x /= o; y /= o; return *this; }
+		Vector2 operator+=(float o) { return Vector2(x += o, y += o); }
+		Vector2 operator-=(float o) { return Vector2(x -= o, y -= o); }
+		Vector2 operator*=(float o) { return Vector2(x *= o, y *= o); }
+		Vector2 operator/=(float o) { return Vector2(x /= o, y /= o); }
 
 		Vector2 operator+(const Vector2& other) const { return Vector2(x + other.x, y + other.y); }
 		Vector2 operator-(const Vector2& other) const { return Vector2(x - other.x, y - other.y); }
@@ -35,12 +41,12 @@ namespace fw
 		Vector2 operator*=(const Vector2& o) { x *= o.x; y *= o.y; return *this; }
 		Vector2 operator/=(const Vector2& o) { x /= o.x; y /= o.y; return *this; }
 
-		bool Vector2::operator==(const Vector2& aVector2) const { return x == aVector2.x && y == aVector2.y; }
-		bool Vector2::operator!=(const Vector2& aVector2) const { return x != aVector2.x || y != aVector2.y; }
-		bool Vector2::operator<(const Vector2& aVector2) const	{ return (x == aVector2.x) ? (y < aVector2.y) : (x < aVector2.x); }
-		bool Vector2::operator<=(const Vector2& aVector2) const	{ return (x == aVector2.x) ? (y <= aVector2.y) : (x <= aVector2.x); }
-		bool Vector2::operator>(const Vector2& aVector2) const	{ return (x == aVector2.x) ? (y > aVector2.y) : (x > aVector2.x); }
-		bool Vector2::operator>=(const Vector2& aVector2) const	{ return (x == aVector2.x) ? (y >= aVector2.y) : (x >= aVector2.x); }
+		bool operator==(const Vector2& aVector2) const	{ return (fequal(x, aVector2.x) && fequal(y, aVector2.y)); }
+		bool operator!=(const Vector2& aVector2) const	{ return x != aVector2.x || y != aVector2.y; }
+		bool operator<(const Vector2&  aVector2) const	{ return (x == aVector2.x) ? (y < aVector2.y) : (x < aVector2.x); }
+		bool operator<=(const Vector2& aVector2) const	{ return (x == aVector2.x) ? (y <= aVector2.y) : (x <= aVector2.x); }
+		bool operator>(const Vector2&  aVector2) const	{ return (x == aVector2.x) ? (y > aVector2.y) : (x > aVector2.x); }
+		bool operator>=(const Vector2& aVector2) const	{ return (x == aVector2.x) ? (y >= aVector2.y) : (x >= aVector2.x); }
 
 
 		float Length() { return sqrtf(SquaredLength()); }

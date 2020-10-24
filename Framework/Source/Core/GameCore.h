@@ -12,9 +12,9 @@ public:
 	GameCore(FWCore* pFramework);
 	virtual ~GameCore();
 
+	virtual void StartFrame(float deltaTime) = 0;
 	virtual void Update(float deltaTime) = 0;
 	virtual void Draw() = 0;
-
 	virtual void OnEvent(Event* pEvent) = 0;
 
 	FWCore* GetFramework() { return m_pFramework; }

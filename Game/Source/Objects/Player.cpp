@@ -29,29 +29,37 @@ void Player::ApplyMovement(float delta)
 {
 	Vector2 dir = (Vector2(0, 0));
 
-	Vector2 newLoc = m_Position - spawnLoc;
-
-	if ((GetPosition().Distance(spawnLoc) >= 4.5f))
+	float radius = static_cast<Game*>(m_GameCore)->m_Radius;
 	{
-		m_Position = newLoc.Normalized() * 4.5f + spawnLoc;
+		Vector2 newLoc = m_Position - spawnLoc;
+		if ((GetPosition().Distance(spawnLoc) >= radius))
+		{
+			m_Position = newLoc.Normalized() * radius + spawnLoc;
+		}
+	}
+
+	if (m_pPlayerController->WasPressed(PlayerController::Mask::Up))
+	{
+		/*m_Position = Vector2(5, 5);*/
 	}
 	
-	if (m_pPlayerController->IsUpHeld())
-	{
-		dir.y = 1;
+	if (m_pPlayerController->IsHeld(PlayerController::Mask::Up)) 
+	{ 
+		dir.y = 1; 
 	}
-	if (m_pPlayerController->IsDownHeld())
+	if (m_pPlayerController->IsHeld(PlayerController::Mask::Down))
 	{
 		dir.y = -1;
 	}
-	if (m_pPlayerController->IsLeftHeld())
+	if (m_pPlayerController->IsHeld(PlayerController::Mask::Left))
 	{
 		dir.x = -1;
 	}
-	if (m_pPlayerController->IsRightHeld())
+	if (m_pPlayerController->IsHeld(PlayerController::Mask::Right))
 	{
 		dir.x = 1;
 	}
-	
+
+	dir.Normalize();
 	m_Position += dir * m_Speed * delta;
 }

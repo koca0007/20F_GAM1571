@@ -8,7 +8,6 @@ Enemy::Enemy(std::string name, Vector2 position, fw::Mesh* mesh, fw::ShaderProgr
 {
 	m_Player = player;
 	initialPosition = position;
-	framework = m_GameCore->GetFramework();
 	direction = m_Player->GetPosition() - GetPosition();
 	
 	m_Speed = ((rand() % 7) + 4) / 1.5f;
