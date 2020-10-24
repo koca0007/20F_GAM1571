@@ -105,7 +105,6 @@ void Game::OnEvent(fw::Event* pEvent)
 
 	if (pEvent->GetType() == SpawnEnemiesEvent::GetStaticEventType())
 	{
-		
 		float angle = (rand() % 360) / 1.0f;
 		angle *= (float)(PI / 180.0f);
 
@@ -144,6 +143,14 @@ void Game::OnEvent(fw::Event* pEvent)
 		delete pPlayer;
 	}
 
+	if (pEvent->GetType() == RestartGameEvent::GetStaticEventType())
+	{
+		RestartGameEvent* pRestartGameEvent = static_cast<RestartGameEvent*>(pEvent);
+		Player* pPlayer = pRestartGameEvent->GetPlayer();
+		
+		player = new Player("Player", Vector2(5, 5), m_pPlayerController, m_pMeshHuman, m_pShader, Vector4::Green(), this);
+		m_Players.push_back(player);
+	}
 }
 
 void Game::StartFrame(float deltaTime)
@@ -203,6 +210,14 @@ void Game::Update(float deltaTime)
 			wglSwapInterval(m_VSyncEnabled ? 1 : 0);
 		}
 	} // !bGameOver
+	else
+	{
+		if (m_pPlayerController->IsHeld(PlayerController::Mask::Restart))
+		{
+			bGameOver = false;
+			m_pEventManager->AddEvent(new RestartGameEvent(player));
+		}
+	}
 }
 
 void Game::Draw()

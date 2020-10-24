@@ -94,15 +94,19 @@ protected:
 	Player* m_Player = nullptr;
 };
 
-class GameOverEvent : public fw::Event
+class RestartGameEvent : public fw::Event
 {
 public:
-	GameOverEvent()
+	RestartGameEvent(Player* player)
 	{
-		
+		m_Player = player;
 	}
-	virtual ~GameOverEvent() {}
+	virtual ~RestartGameEvent() {}
+	Player* GetPlayer() { return m_Player; }
 
-	static const char* GetStaticEventType() { return "GameOverEvent"; }
+	static const char* GetStaticEventType() { return "RestartGameEvent"; }
 	virtual const char* GetType() override { return GetStaticEventType(); }
+
+protected:
+	Player* m_Player = nullptr;
 };
