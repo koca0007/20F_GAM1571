@@ -43,8 +43,7 @@ public:
 
 	float m_Radius;
 protected:
-	
-	
+
 	float numberOfSides;
 	bool isColliding = false;
 	Vector2 vec2;
@@ -59,6 +58,7 @@ protected:
 	Levels currentLevel;
 	GameStates gameState;
 	float m_LevelTimer;
+	float m_WinTimer;
 
 	fw::ImGuiManager* m_pImGuiManager = nullptr;
 	fw::ShaderProgram* m_pShader = nullptr;

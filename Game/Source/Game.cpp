@@ -89,6 +89,7 @@ void Game::Init()
 	currentLevel = Level1;
 	gameState = Running;
 	m_LevelTimer = 0.0f;
+	m_WinTimer = 0.0f;
 }
 
 void Game::OnEvent(fw::Event* pEvent)
@@ -115,8 +116,18 @@ void Game::OnEvent(fw::Event* pEvent)
 		float x = m_Radius * cosf(angle) + 5.0f;
 		float y = m_Radius * sinf(angle) + 5.0f;
 
-		Enemy* enemy = new Enemy("Enemy", Vector2(x, y), m_pMeshHuman, m_pShader, Vector4::Blue(), this, player);
-		m_ActiveEnemies.push_back(enemy);
+		if (currentLevel == Level1)
+		{
+			Enemy* enemy = new Enemy("Enemy", Vector2(x, y), m_pMeshHuman, m_pShader, Vector4::Blue(), this, player);
+			m_ActiveEnemies.push_back(enemy);
+		}
+		else if (currentLevel == Level2)
+		{
+			Enemy* enemy = new Enemy("Enemy", Vector2(x, y), m_pMeshHuman, m_pShader, Vector4::White(), this, player);
+			m_ActiveEnemies.push_back(enemy);
+		}
+
+		
 	}
 
 	if (pEvent->GetType() == DeleteEnemiesEvent::GetStaticEventType())
@@ -203,6 +214,23 @@ void Game::Update(float deltaTime)
 			m_LevelTimer = 0;
 		}
 	}
+	else if (gameState == Win)
+	{
+		m_WinTimer += deltaTime;
+		if (m_WinTimer >= 3.0f)
+		{
+			if (currentLevel == Level1)
+			{
+				currentLevel = Level2;
+				gameState = Running;
+			}
+			else if (currentLevel == Level2)
+			{
+				currentLevel = Level3;
+				gameState = Running;
+			}
+		}
+	}
 }
 
 void Game::Draw()
@@ -242,6 +270,19 @@ void Game::HandleLevels(float deltaTime)
 			gameState = Win;
 			m_LevelTimer = 0;
 		}
+	}
+	else if (currentLevel == Level2)
+	{
+		ImGui::Text("LEVEL 2");
+		if (m_LevelTimer >= 7.0f)
+		{
+			gameState = Win;
+			m_LevelTimer = 0;
+		}
+	}
+	else if (currentLevel == Level3)
+	{
+		ImGui::Text("LEVEL 3");
 	}
 }
 
