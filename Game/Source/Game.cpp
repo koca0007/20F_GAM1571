@@ -14,19 +14,6 @@
 Game::Game(fw::FWCore* pFramework) : fw::GameCore(pFramework)
 {
 	wglSwapInterval(m_VSyncEnabled ? 1 : 0);
-
-	Vector2 a(1.111f, 1.111f);
-
-	a *= 100;
-
-	if ( a == Vector2( 111.1f, 111.1f ))
-	{
-		int bp = 1;
-	}
-	else
-	{
-		int bp = 1;
-	}
 }
 
 Game::~Game()
@@ -89,7 +76,7 @@ void Game::Init()
 	currentLevel = Level1;
 	gameState = Running;
 	m_LevelTimer = 0.0f;
-	m_WinTimer = 0.0f;
+	m_WinTimer = 3.0f;
 }
 
 void Game::OnEvent(fw::Event* pEvent)
@@ -126,8 +113,11 @@ void Game::OnEvent(fw::Event* pEvent)
 			Enemy* enemy = new Enemy("Enemy", Vector2(x, y), m_pMeshHuman, m_pShader, Vector4::White(), this, player);
 			m_ActiveEnemies.push_back(enemy);
 		}
-
-		
+		else if (currentLevel == Level3)
+		{
+			Enemy* enemy = new Enemy("Enemy", Vector2(x, y), m_pMeshHuman, m_pShader, Vector4::Yellow(), this, player);
+			m_ActiveEnemies.push_back(enemy);
+		}
 	}
 
 	if (pEvent->GetType() == DeleteEnemiesEvent::GetStaticEventType())
@@ -206,18 +196,21 @@ void Game::Update(float deltaTime)
 	}
 	else if (gameState == Loss)
 	{
+		ImGui::Text("Game Over! Press R to restart.");
 		if (m_pPlayerController->IsHeld(PlayerController::Mask::Restart))
 		{
 			gameState = Running;
 			currentLevel = Level1;
 			m_pEventManager->AddEvent(new RestartGameEvent(player));
 			m_LevelTimer = 0;
+			m_WinTimer = 3.0f;
 		}
 	}
 	else if (gameState == Win)
 	{
-		m_WinTimer += deltaTime;
-		if (m_WinTimer >= 3.0f)
+		m_WinTimer -= deltaTime;
+		ImGui::Text("WIN! %0.0f seconds for the next level", m_WinTimer);
+		if (m_WinTimer <= 0.0f)
 		{
 			if (currentLevel == Level1)
 			{
@@ -226,7 +219,13 @@ void Game::Update(float deltaTime)
 			}
 			else if (currentLevel == Level2)
 			{
+				
 				currentLevel = Level3;
+				gameState = Running;
+			}
+			else if (currentLevel == Level3)
+			{
+				currentLevel = Level1;
 				gameState = Running;
 			}
 		}
@@ -265,7 +264,7 @@ void Game::HandleLevels(float deltaTime)
 	if (currentLevel == Level1)
 	{
 		ImGui::Text("LEVEL 1");
-		if (m_LevelTimer >= 5.0f)
+		if (m_LevelTimer >= 4.0f)
 		{
 			gameState = Win;
 			m_LevelTimer = 0;
@@ -274,7 +273,8 @@ void Game::HandleLevels(float deltaTime)
 	else if (currentLevel == Level2)
 	{
 		ImGui::Text("LEVEL 2");
-		if (m_LevelTimer >= 7.0f)
+		m_WinTimer = 3.0f;
+		if (m_LevelTimer >= 5.0f)
 		{
 			gameState = Win;
 			m_LevelTimer = 0;
@@ -283,6 +283,11 @@ void Game::HandleLevels(float deltaTime)
 	else if (currentLevel == Level3)
 	{
 		ImGui::Text("LEVEL 3");
+		if (m_LevelTimer >= 4.0f)
+		{
+			gameState = Win;
+			m_LevelTimer = 0;
+		}
 	}
 }
 

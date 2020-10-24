@@ -9,6 +9,7 @@ class Enemy;
 
 enum Levels
 {
+	Main,
 	Level1,
 	Level2,
 	Level3,
@@ -47,7 +48,7 @@ protected:
 	float numberOfSides;
 	bool isColliding = false;
 	Vector2 vec2;
-	bool m_VSyncEnabled = false;
+	bool m_VSyncEnabled = true;
 
 	float timeToSpawn = 4;
 	float timePassed = 0;

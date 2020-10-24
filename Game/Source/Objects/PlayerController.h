@@ -10,6 +10,7 @@ public:
 		Left	=	4,
 		Right	=	8,
 		Restart =	16,
+		Start	=	32,
 	};
 
 	PlayerController();
