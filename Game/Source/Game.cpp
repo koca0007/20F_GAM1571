@@ -77,7 +77,7 @@ void Game::Init()
 	m_PlayerMesh->CreateCircle(GL_TRIANGLE_FAN, 0.15f, (unsigned int)numberOfSides);
 
 	m_InnerCircleMesh = new fw::Mesh();
-	m_InnerCircle = new fw::GameObject("InnerCircle", Vector2(5, 5), m_InnerCircleMesh, m_pShader, Vector4::Blue(), this);
+	m_InnerCircle = new fw::GameObject("InnerCircle", Vector2(5, 5), m_InnerCircleMesh, m_pShader, Vector4::Indigo(), this);
 	m_InnerCircleMesh->CreateCircle(GL_TRIANGLE_FAN, m_InnerRadius, (unsigned int)numberOfSides);
 
 	currentLevel = Main;
@@ -127,7 +127,7 @@ void Game::OnEvent(fw::Event* pEvent)
 		}
 		else if (currentLevel == Level3)
 		{
-			Enemy* enemy = new Enemy("Enemy", Vector2(x1, y1), m_pMeshHuman, m_pShader, Vector4::Yellow(), this, player);
+			Enemy* enemy = new Enemy("Enemy", Vector2(x1, y1), m_pMeshHuman, m_pShader, Vector4::Orange(), this, player);
 			m_ActiveEnemies.push_back(enemy);
 		}
 	}
@@ -283,8 +283,9 @@ void Game::HandleLevels(float deltaTime)
 		m_LevelTimer += deltaTime;
 		if (currentLevel == Level1)
 		{
+			m_Objects.front()->SetColor(Vector4::Red());
 			ImGui::Text("LEVEL 1");
-			if (m_LevelTimer >= 10.0f)
+			if (m_LevelTimer >= 6.0f)
 			{
 				gameState = Win;
 				m_LevelTimer = 0;
@@ -292,6 +293,8 @@ void Game::HandleLevels(float deltaTime)
 		}
 		else if (currentLevel == Level2)
 		{
+			m_Objects.front()->SetColor(Vector4::Purple());
+			player->SetColor(Vector4::Yellow());
 			ImGui::Text("LEVEL 2");
 			m_WinTimer = 5.0f;
 			if (m_LevelTimer >= 8.0f)
@@ -302,10 +305,12 @@ void Game::HandleLevels(float deltaTime)
 		}
 		else if (currentLevel == Level3)
 		{
+			m_Objects.front()->SetColor(Vector4::Grey());
+			player->SetColor(Vector4::DarkGreen());
 			bDrawInnerCircle = true;
-
 			ImGui::Text("LEVEL 3");
-			if (m_LevelTimer >= 10.0f)
+
+			if (m_LevelTimer >= 6.0f)
 			{
 				gameState = Victory;
 				m_LevelTimer = 0;
@@ -318,6 +323,7 @@ void Game::HandleGameStates(float deltaTime)
 {
 	if (gameState == Main)
 	{
+		m_Objects.front()->SetColor(Vector4::Red());
 		ImGui::Text("Press E to Start the Game.");
 		ImGui::Text("1 for Level 1");
 		ImGui::Text("2 for Level 2");
@@ -358,6 +364,7 @@ void Game::HandleGameStates(float deltaTime)
 	}
 	else if (gameState == Victory)
 	{
+		bDrawInnerCircle = false;
 		ImGui::Text("VICTORY!! Press R to restart.");
 		if (m_pPlayerController->IsHeld(PlayerController::Mask::Restart))
 		{
@@ -411,11 +418,11 @@ void Game::HandlePlayerLoss()
 void Game::ResetPlayer()
 {
 	if (m_WinTimer <= 2.0f)
-		player->m_Color = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
+		player->SetAlpha(0.0f);
 
 	if (m_WinTimer <= 1.5f)
 	{
 		player->SetPosition(player->spawnLoc);
-		player->m_Color = Vector4::Green();
+		player->SetAlpha(1.0f);
 	}
 }
