@@ -46,6 +46,9 @@ void PlayerController::OnEvent(fw::Event* pEvent)
 				if (pInputEvent->GetKeyCode() == 'D') { m_Flags |= Mask::Right;	  }
 				if (pInputEvent->GetKeyCode() == 'R') { m_Flags |= Mask::Restart; }
 				if (pInputEvent->GetKeyCode() == 'E') { m_Flags |= Mask::Start;   }
+				if (pInputEvent->GetKeyCode() == '1') { m_Flags |= Mask::Level1;  }
+				if (pInputEvent->GetKeyCode() == '2') { m_Flags |= Mask::Level2;  }
+				if (pInputEvent->GetKeyCode() == '3') { m_Flags |= Mask::Level3;  }
 			}
 
 			if (pInputEvent->GetDeviceState() == fw::InputEvent::DeviceState::Released)
@@ -56,6 +59,9 @@ void PlayerController::OnEvent(fw::Event* pEvent)
 				if (pInputEvent->GetKeyCode() == 'D') { m_Flags &= ~Mask::Right;	}
 				if (pInputEvent->GetKeyCode() == 'R') { m_Flags &= ~Mask::Restart;	}
 				if (pInputEvent->GetKeyCode() == 'E') { m_Flags &= ~Mask::Start;	}
+				if (pInputEvent->GetKeyCode() == '1') { m_Flags &= ~Mask::Level1;	}
+				if (pInputEvent->GetKeyCode() == '2') { m_Flags &= ~Mask::Level2;	}
+				if (pInputEvent->GetKeyCode() == '3') { m_Flags &= ~Mask::Level3;	}
 			}
 		}
 	}

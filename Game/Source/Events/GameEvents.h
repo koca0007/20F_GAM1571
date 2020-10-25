@@ -1,5 +1,17 @@
 #pragma once
 
+class LevelSelectEvent : public fw::Event
+{
+public:
+	LevelSelectEvent()
+	{
+		
+	}
+	virtual ~LevelSelectEvent() {}
+
+	static const char* GetStaticEventType() { return "LevelSelectEvent"; }
+	virtual const char* GetType() override { return GetStaticEventType(); }
+};
 
 class RemoveFromGameEvent : public fw::Event
 {

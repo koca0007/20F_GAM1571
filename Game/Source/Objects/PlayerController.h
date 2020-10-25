@@ -11,6 +11,9 @@ public:
 		Right	=	8,
 		Restart =	16,
 		Start	=	32,
+		Level1  =   64,
+		Level2  =   128,
+		Level3  =   256,
 	};
 
 	PlayerController();

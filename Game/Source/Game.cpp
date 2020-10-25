@@ -158,6 +158,39 @@ void Game::OnEvent(fw::Event* pEvent)
 		player = new Player("Player", Vector2(5, 5), m_pPlayerController, m_pMeshHuman, m_pShader, Vector4::Green(), this);
 		m_Players.push_back(player);
 	}
+
+	if (pEvent->GetType() == LevelSelectEvent::GetStaticEventType())
+	{
+		LevelSelectEvent* pLevelSelectEvent = static_cast<LevelSelectEvent*>(pEvent);
+		if (m_pPlayerController->IsHeld(PlayerController::Mask::Start))
+		{
+			gameState = Running;
+			currentLevel = Level1;
+			m_LevelTimer = 0;
+			m_WinTimer = 5.0f;
+		}
+		if (m_pPlayerController->IsHeld(PlayerController::Mask::Level1))
+		{
+			gameState = Running;
+			currentLevel = Level1;
+			m_LevelTimer = 0;
+			m_WinTimer = 5.0f;
+		}
+		if (m_pPlayerController->IsHeld(PlayerController::Mask::Level2))
+		{
+			gameState = Running;
+			currentLevel = Level2;
+			m_LevelTimer = 0;
+			m_WinTimer = 5.0f;
+		}
+		if (m_pPlayerController->IsHeld(PlayerController::Mask::Level3))
+		{
+			gameState = Running;
+			currentLevel = Level3;
+			m_LevelTimer = 0;
+			m_WinTimer = 5.0f;
+		}
+	}
 }
 
 void Game::StartFrame(float deltaTime)
@@ -188,13 +221,11 @@ void Game::Update(float deltaTime)
 	if (gameState == Main)
 	{
 		ImGui::Text("Press E to Start the Game.");
-		if (m_pPlayerController->IsHeld(PlayerController::Mask::Start))
-		{
-			gameState = Running;
-			currentLevel = Level1;
-			m_LevelTimer = 0;
-			m_WinTimer = 5.0f;
-		}
+		ImGui::Text("1 for Level 1");
+		ImGui::Text("2 for Level 2");
+		ImGui::Text("3 for Level 3");
+		m_pEventManager->AddEvent(new LevelSelectEvent());
+		
 	}
 	else if (gameState == Running)
 	{
@@ -309,7 +340,7 @@ void Game::HandleLevels(float deltaTime)
 		if (currentLevel == Level1)
 		{
 			ImGui::Text("LEVEL 1");
-			if (m_LevelTimer >= 1.0f)
+			if (m_LevelTimer >= 10.0f)
 			{
 				gameState = Win;
 				m_LevelTimer = 0;
@@ -319,7 +350,7 @@ void Game::HandleLevels(float deltaTime)
 		{
 			ImGui::Text("LEVEL 2");
 			m_WinTimer = 5.0f;
-			if (m_LevelTimer >= 1.0f)
+			if (m_LevelTimer >= 8.0f)
 			{
 				gameState = Win;
 				m_LevelTimer = 0;
@@ -329,9 +360,8 @@ void Game::HandleLevels(float deltaTime)
 		{
 			bDrawInnerCircle = true;
 
-
 			ImGui::Text("LEVEL 3");
-			if (m_LevelTimer >= 1.0f)
+			if (m_LevelTimer >= 10.0f)
 			{
 				gameState = Victory;
 				m_LevelTimer = 0;
