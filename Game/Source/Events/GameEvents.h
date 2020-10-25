@@ -60,10 +60,9 @@ protected:
 class PlayerDeathEvent : public fw::Event
 {
 public:
-	PlayerDeathEvent(Player* player /*Enemy* enemy*/)
+	PlayerDeathEvent(Player* player)
 	{
 		m_Player = player;
-		/*m_Enemy = enemy;*/
 	}
 	virtual ~PlayerDeathEvent() {}
 
@@ -73,8 +72,6 @@ public:
 	Player* GetPlayer() { return m_Player; }
 
 protected:
-	fw::GameObject* m_pObject = nullptr;
-	/*Enemy* m_Enemy = nullptr;*/
 	Player* m_Player = nullptr;
 };
 

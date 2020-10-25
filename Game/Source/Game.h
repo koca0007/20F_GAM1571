@@ -17,6 +17,7 @@ enum Levels
 
 enum GameStates
 {
+	Null,
 	Running,
 	Loss,
 	Win,
@@ -41,6 +42,7 @@ public:
 	void SpawnEnemies(float deltaTime);
 	void DeleteEnemies();
 	void HandlePlayerLoss();
+	void ResetPlayer();
 
 public:
 	float m_Radius;

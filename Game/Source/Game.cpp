@@ -61,6 +61,7 @@ void Game::Init()
 	numberOfSides = 50;
 	m_Circle = new fw::Mesh();
 	m_Objects.push_back(new fw::GameObject("Circle", Vector2(5, 5), m_Circle, m_pShader, Vector4::Red(), this));
+	m_Circle->CreateCircle(GL_LINE_LOOP, m_Radius, (unsigned int)numberOfSides);
 	
 	m_pPlayerController = new PlayerController();
 
@@ -68,10 +69,8 @@ void Game::Init()
 	player = new Player("Player", Vector2(5, 5), m_pPlayerController, m_pMeshHuman, m_pShader, Vector4::Green(), this);
 	m_Players.push_back(player);
 
-	m_Circle->CreateCircle(GL_LINE_LOOP, m_Radius, (unsigned int)numberOfSides);
-
-	currentLevel = Level1;
-	gameState = Running;
+	currentLevel = Main;
+	gameState = Null;
 	m_LevelTimer = 0.0f;
 	m_WinTimer = 5.0f;
 }
@@ -80,7 +79,6 @@ void Game::OnEvent(fw::Event* pEvent)
 {
 	m_pPlayerController->OnEvent(pEvent);
 
-	// Process the event.
 	if ( pEvent->GetType() == RemoveFromGameEvent::GetStaticEventType() )
 	{
 		RemoveFromGameEvent* pRemoveFromGameEvent = static_cast<RemoveFromGameEvent*>(pEvent);
@@ -178,7 +176,23 @@ void Game::Update(float deltaTime)
 		pEnemy->Update(deltaTime);
 	}
 
-	if (gameState == Running)
+	/*if (player->GetPosition() > Vector2(5,5))
+	{
+		m_pEventManager->AddEvent(new PlayerDeathEvent(player));
+	}*/
+
+	if (gameState == Main)
+	{
+		ImGui::Text("Press E to Start the Game.");
+		if (m_pPlayerController->IsHeld(PlayerController::Mask::Start))
+		{
+			gameState = Running;
+			currentLevel = Level1;
+			m_LevelTimer = 0;
+			m_WinTimer = 5.0f;
+		}
+	}
+	else if (gameState == Running)
 	{
 		SpawnEnemies(deltaTime);
 		HandleLevels(deltaTime);
@@ -207,14 +221,7 @@ void Game::Update(float deltaTime)
 		m_WinTimer -= deltaTime;
 		ImGui::Text("WIN! %0.0f seconds for the next level", m_WinTimer);
 
-		if (m_WinTimer <= 2.0f)
-			player->m_Color = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
-
-		if (m_WinTimer <= 1.5f)
-		{
-			player->SetPosition(player->spawnLoc);
-			player->m_Color = Vector4::Green();
-		}
+		ResetPlayer();
 		if (m_WinTimer <= 0.0f)
 		{
 			if (currentLevel == Level1)
@@ -242,7 +249,6 @@ void Game::Update(float deltaTime)
 		{
 			gameState = Running;
 			currentLevel = Level1;
-			m_pEventManager->AddEvent(new PlayerDeathEvent(player));
 			m_pEventManager->AddEvent(new RestartGameEvent(player));
 			m_LevelTimer = 0;
 			m_WinTimer = 5.0f;
@@ -272,7 +278,7 @@ void Game::Draw()
 		
 		if (currentLevel == Level3)
 		{
-			glPointSize(50);
+			glPointSize(40);
 		}
 		else
 		{
@@ -281,40 +287,41 @@ void Game::Draw()
 		m_ActiveEnemies[i]->Draw();
 		
 	}
-		
-
 	m_pImGuiManager->EndFrame();
 }
 
 void Game::HandleLevels(float deltaTime)
 {
-	m_LevelTimer += deltaTime;
-	if (currentLevel == Level1)
+	if (gameState == Running)
 	{
-		ImGui::Text("LEVEL 1");
-		if (m_LevelTimer >= 8.0f)
+		m_LevelTimer += deltaTime;
+		if (currentLevel == Level1)
 		{
-			gameState = Win;
-			m_LevelTimer = 0;
+			ImGui::Text("LEVEL 1");
+			if (m_LevelTimer >= 8.0f)
+			{
+				gameState = Win;
+				m_LevelTimer = 0;
+			}
 		}
-	}
-	else if (currentLevel == Level2)
-	{
-		ImGui::Text("LEVEL 2");
-		m_WinTimer = 5.0f;
-		if (m_LevelTimer >= 14.0f)
+		else if (currentLevel == Level2)
 		{
-			gameState = Win;
-			m_LevelTimer = 0;
+			ImGui::Text("LEVEL 2");
+			m_WinTimer = 5.0f;
+			if (m_LevelTimer >= 14.0f)
+			{
+				gameState = Win;
+				m_LevelTimer = 0;
+			}
 		}
-	}
-	else if (currentLevel == Level3)
-	{
-		ImGui::Text("LEVEL 3");
-		if (m_LevelTimer >= 4.0f)
+		else if (currentLevel == Level3)
 		{
-			gameState = Victory;
-			m_LevelTimer = 0;
+			ImGui::Text("LEVEL 3");
+			if (m_LevelTimer >= 4.0f)
+			{
+				gameState = Victory;
+				m_LevelTimer = 0;
+			}
 		}
 	}
 }
@@ -348,10 +355,22 @@ void Game::HandlePlayerLoss()
 	{
 		Enemy* enemy = *it;
 
-		if (player->GetPosition().Distance(enemy->GetPosition()) <= 0.25f)
+		if (player->GetPosition().Distance(enemy->GetPosition()) <= 0.30f)
 		{
 			m_pEventManager->AddEvent(new PlayerDeathEvent(player));
 			gameState = Loss;
 		}
+	}
+}
+
+void Game::ResetPlayer()
+{
+	if (m_WinTimer <= 2.0f)
+		player->m_Color = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
+
+	if (m_WinTimer <= 1.5f)
+	{
+		player->SetPosition(player->spawnLoc);
+		player->m_Color = Vector4::Green();
 	}
 }
