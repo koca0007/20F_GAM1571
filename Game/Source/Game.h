@@ -69,8 +69,8 @@ protected:
 	fw::GameCore* m_GameCore = nullptr;
 
 	fw::Mesh* m_Circle = nullptr;
-	fw::Mesh* m_InnerCircle = nullptr;
-	
+	fw::Mesh* m_InnerCircleMesh = nullptr;
+	fw::GameObject* m_InnerCircle = nullptr;
 
 	Player* player;
 	PlayerController* m_pPlayerController = nullptr;

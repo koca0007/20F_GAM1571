@@ -19,6 +19,7 @@ Game::~Game()
 	delete m_pMeshHuman;
 	delete m_pMeshAnimal;
 	delete m_Circle;
+	delete m_InnerCircleMesh;
 	delete m_pPlayerController;
 	delete m_pImGuiManager;
 	delete m_pEventManager;
@@ -71,6 +72,10 @@ void Game::Init()
 	//Player
 	player = new Player("Player", Vector2(5, 5), m_pPlayerController, m_pMeshHuman, m_pShader, Vector4::Green(), this);
 	m_Players.push_back(player);
+
+	m_InnerCircleMesh = new fw::Mesh();
+	m_InnerCircle = new fw::GameObject("InnerCircle", Vector2(5, 5), m_InnerCircleMesh, m_pShader, Vector4::Blue(), this);
+	m_InnerCircleMesh->CreateCircle(GL_TRIANGLE_FAN, m_InnerRadius, (unsigned int)numberOfSides);
 
 	currentLevel = Main;
 	gameState = Null;
@@ -172,13 +177,14 @@ void Game::Update(float deltaTime)
 		{
 			wglSwapInterval(m_VSyncEnabled ? 1 : 0);
 		}*/
-	}
+	}		
 
 	for (Enemy* pEnemy : m_ActiveEnemies)
 	{
 		pEnemy->Update(deltaTime);
 	}
 
+	/* Later on, I will change the level / state system to be more dynamic.*/
 	if (gameState == Main)
 	{
 		ImGui::Text("Press E to Start the Game.");
@@ -204,11 +210,12 @@ void Game::Update(float deltaTime)
 	}
 	else if (gameState == Loss)
 	{
+		bDrawInnerCircle = false;
 		ImGui::Text("Game Over! Press R to restart.");
 		if (m_pPlayerController->IsHeld(PlayerController::Mask::Restart))
 		{
-			gameState = Running;
-			currentLevel = Level1;
+			gameState = Null;
+			currentLevel = Main;
 			m_pEventManager->AddEvent(new RestartGameEvent(player));
 			m_LevelTimer = 0;
 			m_WinTimer = 5.0f;
@@ -245,8 +252,9 @@ void Game::Update(float deltaTime)
 		ImGui::Text("VICTORY!! Press R to restart.");
 		if (m_pPlayerController->IsHeld(PlayerController::Mask::Restart))
 		{
-			gameState = Running;
-			currentLevel = Level1;
+			gameState = Null;
+			currentLevel = Main;
+			m_pEventManager->AddEvent(new PlayerDeathEvent(player));
 			m_pEventManager->AddEvent(new RestartGameEvent(player));
 			m_LevelTimer = 0;
 			m_WinTimer = 5.0f;
@@ -265,6 +273,12 @@ void Game::Draw()
 		pObject->Draw();
 	}
 
+	if (currentLevel == Level3)
+	{
+		glLineWidth(10);
+		m_InnerCircle->Draw();
+	}
+
 	for (Player* pPlayer : m_Players)
 	{
 		glPointSize(10);
@@ -273,10 +287,9 @@ void Game::Draw()
 
 	for (int i = 0; i < m_ActiveEnemies.size(); i++)
 	{
-		
 		if (currentLevel == Level3)
 		{
-			glPointSize(40);
+			glPointSize(30);
 		}
 		else
 		{
@@ -315,12 +328,10 @@ void Game::HandleLevels(float deltaTime)
 		else if (currentLevel == Level3)
 		{
 			bDrawInnerCircle = true;
-			m_InnerCircle = new fw::Mesh();
-			m_Objects.push_back(new fw::GameObject("InnerCircle", Vector2(5, 5), m_InnerCircle, m_pShader, Vector4::Blue(), this));
-			m_InnerCircle->CreateCircle(GL_TRIANGLE_FAN, m_InnerRadius, (unsigned int)numberOfSides);
+
 
 			ImGui::Text("LEVEL 3");
-			if (m_LevelTimer >= 10.0f)
+			if (m_LevelTimer >= 1.0f)
 			{
 				gameState = Victory;
 				m_LevelTimer = 0;
