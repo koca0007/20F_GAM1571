@@ -8,9 +8,6 @@
 #include "Objects/PlayerController.h"
 #include "Objects/Enemy.h"
 
-#define PI 3.1415926535897932384626433832795028841971693993751058209749445923078164062
-
-
 Game::Game(fw::FWCore* pFramework) : fw::GameCore(pFramework)
 {
 	wglSwapInterval(m_VSyncEnabled ? 1 : 0);
@@ -76,7 +73,7 @@ void Game::Init()
 	currentLevel = Level1;
 	gameState = Running;
 	m_LevelTimer = 0.0f;
-	m_WinTimer = 3.0f;
+	m_WinTimer = 5.0f;
 }
 
 void Game::OnEvent(fw::Event* pEvent)
@@ -99,23 +96,29 @@ void Game::OnEvent(fw::Event* pEvent)
 	{
 		float angle = (rand() % 360) / 1.0f;
 		angle *= (float)(PI / 180.0f);
+		float x1 = m_Radius * cosf(angle) + 5.0f;
+		float y1 = m_Radius * sinf(angle) + 5.0f;
 
-		float x = m_Radius * cosf(angle) + 5.0f;
-		float y = m_Radius * sinf(angle) + 5.0f;
+		float angle2 = (rand() % 360) / 1.0f;
+		angle2 *= (float)(PI / 180.0f);
+		float x2 = m_Radius * cosf(angle2) + 5.0f;
+		float y2 = m_Radius * sinf(angle2) + 5.0f;
 
 		if (currentLevel == Level1)
 		{
-			Enemy* enemy = new Enemy("Enemy", Vector2(x, y), m_pMeshHuman, m_pShader, Vector4::Blue(), this, player);
+			Enemy* enemy = new Enemy("Enemy", Vector2(x1, y1), m_pMeshHuman, m_pShader, Vector4::Blue(), this, player);
 			m_ActiveEnemies.push_back(enemy);
 		}
 		else if (currentLevel == Level2)
 		{
-			Enemy* enemy = new Enemy("Enemy", Vector2(x, y), m_pMeshHuman, m_pShader, Vector4::White(), this, player);
-			m_ActiveEnemies.push_back(enemy);
+			Enemy* enemy1 = new Enemy("Enemy", Vector2(x1, y1), m_pMeshHuman, m_pShader, Vector4::White(), this, player);
+			m_ActiveEnemies.push_back(enemy1);
+			Enemy* enemy2 = new Enemy("Enemy", Vector2(x2, y2), m_pMeshHuman, m_pShader, Vector4::White(), this, player);
+			m_ActiveEnemies.push_back(enemy2);
 		}
 		else if (currentLevel == Level3)
 		{
-			Enemy* enemy = new Enemy("Enemy", Vector2(x, y), m_pMeshHuman, m_pShader, Vector4::Yellow(), this, player);
+			Enemy* enemy = new Enemy("Enemy", Vector2(x1, y1), m_pMeshHuman, m_pShader, Vector4::Yellow(), this, player);
 			m_ActiveEnemies.push_back(enemy);
 		}
 	}
@@ -129,12 +132,6 @@ void Game::OnEvent(fw::Event* pEvent)
 		m_ActiveEnemies.erase(it);
 
 		delete pEnemy;
-	}
-
-	if (pEvent->GetType() == CollisionEvent::GetStaticEventType())
-	{
-		health--;
-		return;
 	}
 
 	if (pEvent->GetType() == PlayerDeathEvent::GetStaticEventType())
@@ -170,7 +167,6 @@ void Game::Update(float deltaTime)
 		//ImGui::ShowDemoWindow();
 		//ImGui::SliderFloat("Number of Sides ", &numberOfSides, 3.0f, 100.0f, "%.0f");
 		//ImGui::SliderFloat("Radius ", &m_Radius, 2.0f, 5.0f, "%.2f");
-
 		/*if (ImGui::Checkbox("VSync", &m_VSyncEnabled))
 		{
 			wglSwapInterval(m_VSyncEnabled ? 1 : 0);
@@ -184,15 +180,15 @@ void Game::Update(float deltaTime)
 
 	if (gameState == Running)
 	{
-		for (Player* pPlayer : m_Players)
-		{
-			pPlayer->Update(deltaTime);
-		}
-
 		SpawnEnemies(deltaTime);
 		HandleLevels(deltaTime);
 		DeleteEnemies();
 		HandlePlayerLoss();
+
+		for (Player* pPlayer : m_Players)
+		{
+			pPlayer->Update(deltaTime);
+		}
 	}
 	else if (gameState == Loss)
 	{
@@ -203,13 +199,22 @@ void Game::Update(float deltaTime)
 			currentLevel = Level1;
 			m_pEventManager->AddEvent(new RestartGameEvent(player));
 			m_LevelTimer = 0;
-			m_WinTimer = 3.0f;
+			m_WinTimer = 5.0f;
 		}
 	}
 	else if (gameState == Win)
 	{
 		m_WinTimer -= deltaTime;
 		ImGui::Text("WIN! %0.0f seconds for the next level", m_WinTimer);
+
+		if (m_WinTimer <= 2.0f)
+			player->m_Color = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
+
+		if (m_WinTimer <= 1.5f)
+		{
+			player->SetPosition(player->spawnLoc);
+			player->m_Color = Vector4::Green();
+		}
 		if (m_WinTimer <= 0.0f)
 		{
 			if (currentLevel == Level1)
@@ -228,6 +233,19 @@ void Game::Update(float deltaTime)
 				currentLevel = Level1;
 				gameState = Running;
 			}
+		}
+	}
+	else if (gameState == Victory)
+	{
+		ImGui::Text("VICTORY!! Press R to restart.");
+		if (m_pPlayerController->IsHeld(PlayerController::Mask::Restart))
+		{
+			gameState = Running;
+			currentLevel = Level1;
+			m_pEventManager->AddEvent(new PlayerDeathEvent(player));
+			m_pEventManager->AddEvent(new RestartGameEvent(player));
+			m_LevelTimer = 0;
+			m_WinTimer = 5.0f;
 		}
 	}
 }
@@ -251,9 +269,19 @@ void Game::Draw()
 
 	for (int i = 0; i < m_ActiveEnemies.size(); i++)
 	{
-		glPointSize(20);
+		
+		if (currentLevel == Level3)
+		{
+			glPointSize(50);
+		}
+		else
+		{
+			glPointSize(20);
+		}
 		m_ActiveEnemies[i]->Draw();
+		
 	}
+		
 
 	m_pImGuiManager->EndFrame();
 }
@@ -264,7 +292,7 @@ void Game::HandleLevels(float deltaTime)
 	if (currentLevel == Level1)
 	{
 		ImGui::Text("LEVEL 1");
-		if (m_LevelTimer >= 4.0f)
+		if (m_LevelTimer >= 8.0f)
 		{
 			gameState = Win;
 			m_LevelTimer = 0;
@@ -273,8 +301,8 @@ void Game::HandleLevels(float deltaTime)
 	else if (currentLevel == Level2)
 	{
 		ImGui::Text("LEVEL 2");
-		m_WinTimer = 3.0f;
-		if (m_LevelTimer >= 5.0f)
+		m_WinTimer = 5.0f;
+		if (m_LevelTimer >= 14.0f)
 		{
 			gameState = Win;
 			m_LevelTimer = 0;
@@ -285,7 +313,7 @@ void Game::HandleLevels(float deltaTime)
 		ImGui::Text("LEVEL 3");
 		if (m_LevelTimer >= 4.0f)
 		{
-			gameState = Win;
+			gameState = Victory;
 			m_LevelTimer = 0;
 		}
 	}

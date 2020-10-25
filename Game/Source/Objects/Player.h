@@ -21,10 +21,13 @@ public:
 	float GetSpeed() { return m_Speed; }
 	void SetSpeed(float newSpeed) { m_Speed = newSpeed; }
 
+public:
+	Vector2 spawnLoc;
+
 protected:
 	fw::FWCore* framework;
 	float m_Speed;
 	Vector2 lastPos;
-	Vector2 spawnLoc;
+	
 	PlayerController* m_pPlayerController = nullptr;
 };

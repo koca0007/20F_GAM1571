@@ -20,6 +20,7 @@ enum GameStates
 	Running,
 	Loss,
 	Win,
+	Victory
 };
 
 class Game : public fw::GameCore
@@ -41,21 +42,17 @@ public:
 	void DeleteEnemies();
 	void HandlePlayerLoss();
 
-
+public:
 	float m_Radius;
-protected:
 
+protected:
 	float numberOfSides;
-	bool isColliding = false;
-	Vector2 vec2;
 	bool m_VSyncEnabled = true;
 
 	float timeToSpawn = 4;
 	float timePassed = 0;
 
-	int health = 2;
-	bool bGameOver = false;
-
+	//Level States
 	Levels currentLevel;
 	GameStates gameState;
 	float m_LevelTimer;
@@ -69,9 +66,9 @@ protected:
 	fw::GameCore* m_GameCore = nullptr;
 
 	Player* player;
-
 	PlayerController* m_pPlayerController = nullptr;
 
+	//Vectors
 	std::vector<Player*> m_Players;
 	std::vector<fw::GameObject*> m_Objects;
 	std::vector<Enemy*> m_ActiveEnemies;

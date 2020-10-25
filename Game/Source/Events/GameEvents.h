@@ -57,19 +57,6 @@ protected:
 	Enemy* m_Enemy = nullptr;
 };
 
-class CollisionEvent : public fw::Event
-{
-public:
-	CollisionEvent()
-	{
-		
-	}
-	virtual ~CollisionEvent() {}
-
-	static const char* GetStaticEventType() { return "CollisionEvent"; }
-	virtual const char* GetType() override { return GetStaticEventType(); }
-};
-
 class PlayerDeathEvent : public fw::Event
 {
 public:
