@@ -46,6 +46,8 @@ public:
 
 public:
 	float m_Radius;
+	bool bDrawInnerCircle;
+	float m_InnerRadius;
 
 protected:
 	float numberOfSides;
@@ -64,8 +66,11 @@ protected:
 	fw::ShaderProgram* m_pShader = nullptr;
 	fw::Mesh* m_pMeshHuman = nullptr;
 	fw::Mesh* m_pMeshAnimal = nullptr;
-	fw::Mesh* m_Circle = nullptr;
 	fw::GameCore* m_GameCore = nullptr;
+
+	fw::Mesh* m_Circle = nullptr;
+	fw::Mesh* m_InnerCircle = nullptr;
+	
 
 	Player* player;
 	PlayerController* m_pPlayerController = nullptr;

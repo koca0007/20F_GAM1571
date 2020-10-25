@@ -29,13 +29,26 @@ void Player::ApplyMovement(float delta)
 {
 	Vector2 dir = (Vector2(0, 0));
 
-	float radius = static_cast<Game*>(m_GameCore)->m_Radius;
+	Game* game = static_cast<Game*>(m_GameCore);
+	float innerRadius = static_cast<Game*>(m_GameCore)->m_InnerRadius;
 	{
 		Vector2 newLoc = m_Position - spawnLoc;
-		if ((GetPosition().Distance(spawnLoc) >= radius))
+		if (!game->bDrawInnerCircle)
 		{
-			m_Position = newLoc.Normalized() * radius + spawnLoc;
+			if ((GetPosition().Distance(spawnLoc) >= game->m_Radius))
+			{
+				m_Position = newLoc.Normalized() * game->m_Radius + spawnLoc;
+			}
 		}
+		else
+		{
+			if ((GetPosition().Distance(spawnLoc) >= game->m_InnerRadius))
+			{
+				m_Position = newLoc.Normalized() * game->m_InnerRadius + spawnLoc;
+			}
+
+		}
+		
 	}
 
 	if (m_pPlayerController->WasPressed(PlayerController::Mask::Up))

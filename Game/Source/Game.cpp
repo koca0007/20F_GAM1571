@@ -62,6 +62,9 @@ void Game::Init()
 	m_Circle = new fw::Mesh();
 	m_Objects.push_back(new fw::GameObject("Circle", Vector2(5, 5), m_Circle, m_pShader, Vector4::Red(), this));
 	m_Circle->CreateCircle(GL_LINE_LOOP, m_Radius, (unsigned int)numberOfSides);
+
+	bDrawInnerCircle = false;
+	m_InnerRadius = 1.5f;
 	
 	m_pPlayerController = new PlayerController();
 
@@ -175,11 +178,6 @@ void Game::Update(float deltaTime)
 	{
 		pEnemy->Update(deltaTime);
 	}
-
-	/*if (player->GetPosition() > Vector2(5,5))
-	{
-		m_pEventManager->AddEvent(new PlayerDeathEvent(player));
-	}*/
 
 	if (gameState == Main)
 	{
@@ -298,7 +296,7 @@ void Game::HandleLevels(float deltaTime)
 		if (currentLevel == Level1)
 		{
 			ImGui::Text("LEVEL 1");
-			if (m_LevelTimer >= 8.0f)
+			if (m_LevelTimer >= 1.0f)
 			{
 				gameState = Win;
 				m_LevelTimer = 0;
@@ -308,7 +306,7 @@ void Game::HandleLevels(float deltaTime)
 		{
 			ImGui::Text("LEVEL 2");
 			m_WinTimer = 5.0f;
-			if (m_LevelTimer >= 14.0f)
+			if (m_LevelTimer >= 1.0f)
 			{
 				gameState = Win;
 				m_LevelTimer = 0;
@@ -316,8 +314,13 @@ void Game::HandleLevels(float deltaTime)
 		}
 		else if (currentLevel == Level3)
 		{
+			bDrawInnerCircle = true;
+			m_InnerCircle = new fw::Mesh();
+			m_Objects.push_back(new fw::GameObject("InnerCircle", Vector2(5, 5), m_InnerCircle, m_pShader, Vector4::Blue(), this));
+			m_InnerCircle->CreateCircle(GL_TRIANGLE_FAN, m_InnerRadius, (unsigned int)numberOfSides);
+
 			ImGui::Text("LEVEL 3");
-			if (m_LevelTimer >= 4.0f)
+			if (m_LevelTimer >= 10.0f)
 			{
 				gameState = Victory;
 				m_LevelTimer = 0;
