@@ -13,6 +13,19 @@ public:
 	virtual const char* GetType() override { return GetStaticEventType(); }
 };
 
+class HandleWinEvent : public fw::Event
+{
+public:
+	HandleWinEvent()
+	{
+
+	}
+	virtual ~HandleWinEvent() {}
+
+	static const char* GetStaticEventType() { return "HandleWinEvent"; }
+	virtual const char* GetType() override { return GetStaticEventType(); }
+};
+
 class RemoveFromGameEvent : public fw::Event
 {
 public:

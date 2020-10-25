@@ -23,6 +23,7 @@ Game::~Game()
 	delete m_pPlayerController;
 	delete m_pImGuiManager;
 	delete m_pEventManager;
+	delete m_PlayerMesh;
 
 	for (Player* player : m_Players)
 	{
@@ -70,8 +71,10 @@ void Game::Init()
 	m_pPlayerController = new PlayerController();
 
 	//Player
-	player = new Player("Player", Vector2(5, 5), m_pPlayerController, m_pMeshHuman, m_pShader, Vector4::Green(), this);
+	m_PlayerMesh = new fw::Mesh();
+	player = new Player("Player", Vector2(5, 5), m_pPlayerController, m_PlayerMesh, m_pShader, Vector4::Green(), this);
 	m_Players.push_back(player);
+	m_PlayerMesh->CreateCircle(GL_TRIANGLE_FAN, 0.15f, (unsigned int)numberOfSides);
 
 	m_InnerCircleMesh = new fw::Mesh();
 	m_InnerCircle = new fw::GameObject("InnerCircle", Vector2(5, 5), m_InnerCircleMesh, m_pShader, Vector4::Blue(), this);
@@ -152,16 +155,13 @@ void Game::OnEvent(fw::Event* pEvent)
 	}
 
 	if (pEvent->GetType() == RestartGameEvent::GetStaticEventType())
-	{
-		RestartGameEvent* pRestartGameEvent = static_cast<RestartGameEvent*>(pEvent);
-		
-		player = new Player("Player", Vector2(5, 5), m_pPlayerController, m_pMeshHuman, m_pShader, Vector4::Green(), this);
+	{		
+		player = new Player("Player", Vector2(5, 5), m_pPlayerController, m_PlayerMesh, m_pShader, Vector4::Green(), this);
 		m_Players.push_back(player);
 	}
 
 	if (pEvent->GetType() == LevelSelectEvent::GetStaticEventType())
 	{
-		LevelSelectEvent* pLevelSelectEvent = static_cast<LevelSelectEvent*>(pEvent);
 		if (m_pPlayerController->IsHeld(PlayerController::Mask::Start))
 		{
 			gameState = Running;
@@ -191,6 +191,32 @@ void Game::OnEvent(fw::Event* pEvent)
 			m_WinTimer = 5.0f;
 		}
 	}
+
+	if (pEvent->GetType() == HandleWinEvent::GetStaticEventType())
+	{
+		ImGui::Text("WIN! %0.0f seconds for the next level", m_WinTimer);
+		ResetPlayer();
+
+		if (m_WinTimer <= 0.0f)
+		{
+			if (currentLevel == Level1)
+			{
+				currentLevel = Level2;
+				gameState = Running;
+			}
+			else if (currentLevel == Level2)
+			{
+
+				currentLevel = Level3;
+				gameState = Running;
+			}
+			else if (currentLevel == Level3)
+			{
+				currentLevel = Level1;
+				gameState = Running;
+			}
+		}
+	}
 }
 
 void Game::StartFrame(float deltaTime)
@@ -202,95 +228,13 @@ void Game::StartFrame(float deltaTime)
 
 void Game::Update(float deltaTime)
 {
-	{
-		//ImGui::ShowDemoWindow();
-		//ImGui::SliderFloat("Number of Sides ", &numberOfSides, 3.0f, 100.0f, "%.0f");
-		//ImGui::SliderFloat("Radius ", &m_Radius, 2.0f, 5.0f, "%.2f");
-		/*if (ImGui::Checkbox("VSync", &m_VSyncEnabled))
-		{
-			wglSwapInterval(m_VSyncEnabled ? 1 : 0);
-		}*/
-	}		
-
 	for (Enemy* pEnemy : m_ActiveEnemies)
 	{
 		pEnemy->Update(deltaTime);
 	}
 
 	/* Later on, I will change the level / state system to be more dynamic.*/
-	if (gameState == Main)
-	{
-		ImGui::Text("Press E to Start the Game.");
-		ImGui::Text("1 for Level 1");
-		ImGui::Text("2 for Level 2");
-		ImGui::Text("3 for Level 3");
-		m_pEventManager->AddEvent(new LevelSelectEvent());
-		
-	}
-	else if (gameState == Running)
-	{
-		SpawnEnemies(deltaTime);
-		HandleLevels(deltaTime);
-		DeleteEnemies();
-		HandlePlayerLoss();
-
-		for (Player* pPlayer : m_Players)
-		{
-			pPlayer->Update(deltaTime);
-		}
-	}
-	else if (gameState == Loss)
-	{
-		bDrawInnerCircle = false;
-		ImGui::Text("Game Over! Press R to restart.");
-		if (m_pPlayerController->IsHeld(PlayerController::Mask::Restart))
-		{
-			gameState = Null;
-			currentLevel = Main;
-			m_pEventManager->AddEvent(new RestartGameEvent(player));
-			m_LevelTimer = 0;
-			m_WinTimer = 5.0f;
-		}
-	}
-	else if (gameState == Win)
-	{
-		m_WinTimer -= deltaTime;
-		ImGui::Text("WIN! %0.0f seconds for the next level", m_WinTimer);
-
-		ResetPlayer();
-		if (m_WinTimer <= 0.0f)
-		{
-			if (currentLevel == Level1)
-			{
-				currentLevel = Level2;
-				gameState = Running;
-			}
-			else if (currentLevel == Level2)
-			{
-				
-				currentLevel = Level3;
-				gameState = Running;
-			}
-			else if (currentLevel == Level3)
-			{
-				currentLevel = Level1;
-				gameState = Running;
-			}
-		}
-	}
-	else if (gameState == Victory)
-	{
-		ImGui::Text("VICTORY!! Press R to restart.");
-		if (m_pPlayerController->IsHeld(PlayerController::Mask::Restart))
-		{
-			gameState = Null;
-			currentLevel = Main;
-			m_pEventManager->AddEvent(new PlayerDeathEvent(player));
-			m_pEventManager->AddEvent(new RestartGameEvent(player));
-			m_LevelTimer = 0;
-			m_WinTimer = 5.0f;
-		}
-	}
+	HandleGameStates(deltaTime);
 }
 
 void Game::Draw()
@@ -366,6 +310,63 @@ void Game::HandleLevels(float deltaTime)
 				gameState = Victory;
 				m_LevelTimer = 0;
 			}
+		}
+	}
+}
+
+void Game::HandleGameStates(float deltaTime)
+{
+	if (gameState == Main)
+	{
+		ImGui::Text("Press E to Start the Game.");
+		ImGui::Text("1 for Level 1");
+		ImGui::Text("2 for Level 2");
+		ImGui::Text("3 for Level 3");
+		m_pEventManager->AddEvent(new LevelSelectEvent());
+
+	}
+	else if (gameState == Running)
+	{
+		SpawnEnemies(deltaTime);
+		HandleLevels(deltaTime);
+		DeleteEnemies();
+		HandlePlayerLoss();
+
+		for (Player* pPlayer : m_Players)
+		{
+			pPlayer->Update(deltaTime);
+		}
+	}
+	else if (gameState == Loss)
+	{
+		bDrawInnerCircle = false;
+		ImGui::Text("Game Over! Press R to restart.");
+		if (m_pPlayerController->IsHeld(PlayerController::Mask::Restart))
+		{
+			gameState = Null;
+			currentLevel = Main;
+			m_pEventManager->AddEvent(new RestartGameEvent(player));
+			m_LevelTimer = 0;
+			m_WinTimer = 5.0f;
+		}
+	}
+	else if (gameState == Win)
+	{
+		m_WinTimer -= deltaTime;
+		
+		m_pEventManager->AddEvent(new HandleWinEvent());
+	}
+	else if (gameState == Victory)
+	{
+		ImGui::Text("VICTORY!! Press R to restart.");
+		if (m_pPlayerController->IsHeld(PlayerController::Mask::Restart))
+		{
+			gameState = Null;
+			currentLevel = Main;
+			m_pEventManager->AddEvent(new PlayerDeathEvent(player));
+			m_pEventManager->AddEvent(new RestartGameEvent(player));
+			m_LevelTimer = 0;
+			m_WinTimer = 5.0f;
 		}
 	}
 }

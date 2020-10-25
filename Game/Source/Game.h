@@ -39,6 +39,7 @@ public:
 	virtual void Draw() override;
 
 	void HandleLevels(float deltaTime);
+	void HandleGameStates(float deltaTime);
 	void SpawnEnemies(float deltaTime);
 	void DeleteEnemies();
 	void HandlePlayerLoss();
@@ -70,6 +71,7 @@ protected:
 
 	fw::Mesh* m_Circle = nullptr;
 	fw::Mesh* m_InnerCircleMesh = nullptr;
+	fw::Mesh* m_PlayerMesh = nullptr;
 	fw::GameObject* m_InnerCircle = nullptr;
 
 	Player* player;

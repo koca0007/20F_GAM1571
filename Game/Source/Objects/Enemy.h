@@ -17,12 +17,9 @@ public:
 	void MoveTo(float DeltaTime);
 
 	Vector2 GetInitialPosition() { return initialPosition; }
-	void Reset();
 
 protected:
 	Player* m_Player;
-	fw::FWCore* framework;
-	bool bMoving = false;
 	Vector2 playerPosition;
 	Vector2 initialPosition;
 	Vector2 direction;
