@@ -495,7 +495,6 @@ void Game::BombExplode()
 				{
 					m_pEventManager->AddEvent(new DeleteEnemiesEvent(enemy));
 				}
-				
 			}
 		}
 		
