@@ -6,6 +6,7 @@
 class PlayerController;
 class Player;
 class Enemy;
+class Bomb;
 
 enum Levels
 {
@@ -44,6 +45,8 @@ public:
 	void DeleteEnemies();
 	void HandlePlayerLoss();
 	void ResetPlayer();
+	void SpawnBombs(float deltaTime);
+	void BombExplode();
 
 public:
 	float m_Radius;
@@ -62,23 +65,24 @@ protected:
 	GameStates gameState;
 	float m_LevelTimer;
 	float m_WinTimer;
+	float m_BombTimer = 0;
 
 	fw::ImGuiManager* m_pImGuiManager = nullptr;
 	fw::ShaderProgram* m_pShader = nullptr;
 	fw::Mesh* m_pMeshHuman = nullptr;
-	fw::Mesh* m_pMeshAnimal = nullptr;
+	fw::Mesh* m_BombMesh = nullptr;
 	fw::GameCore* m_GameCore = nullptr;
-
 	fw::Mesh* m_Circle = nullptr;
 	fw::Mesh* m_InnerCircleMesh = nullptr;
 	fw::Mesh* m_PlayerMesh = nullptr;
 	fw::GameObject* m_InnerCircle = nullptr;
 
-	Player* player;
+	Player* m_Player;
 	PlayerController* m_pPlayerController = nullptr;
 
 	//Vectors
 	std::vector<Player*> m_Players;
 	std::vector<fw::GameObject*> m_Objects;
 	std::vector<Enemy*> m_ActiveEnemies;
+	std::vector<Bomb*> m_Bombs;
 };

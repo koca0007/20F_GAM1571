@@ -8,6 +8,6 @@ extern float meshAttribs_Enemy[];
 extern int meshPrimType_Enemy;
 extern int meshNumVerts_Enemy;
 
-extern float meshAttribs_Circle[];
-extern int meshPrimType_Circle;
-extern int meshNumVerts_Circle;
+extern float meshAttribs_Bomb[];
+extern int meshPrimType_Bomb;
+extern int meshNumVerts_Bomb;

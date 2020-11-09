@@ -82,6 +82,38 @@ protected:
 	Enemy* m_Enemy = nullptr;
 };
 
+class SpawnBombsEvent : public fw::Event
+{
+public:
+	SpawnBombsEvent()
+	{
+		
+	}
+	virtual ~SpawnBombsEvent() {}
+
+	static const char* GetStaticEventType() { return "SpawnBombsEvent"; }
+	virtual const char* GetType() override { return GetStaticEventType(); }
+};
+
+class ExplodeEvent : public fw::Event
+{
+public:
+	ExplodeEvent(Bomb* bomb)
+	{
+		m_Bomb = bomb;
+	}
+	virtual ~ExplodeEvent() {}
+
+	static const char* GetStaticEventType() { return "ExplodeEvent"; }
+	virtual const char* GetType() override { return GetStaticEventType(); }
+	
+	Bomb* GetBomb() { return m_Bomb; }
+	
+
+protected:
+	Bomb* m_Bomb = nullptr;
+};
+
 class PlayerDeathEvent : public fw::Event
 {
 public:

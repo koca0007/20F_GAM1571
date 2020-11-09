@@ -25,6 +25,7 @@ namespace fw
 		Vector2 operator-(float o) const { return Vector2(x - o, y - o); }
 		Vector2 operator*(float o) const { return Vector2(x * o, y * o); }
 		Vector2 operator/(float o) const { return Vector2(x / o, y / o); }
+		Vector2 operator-() const { return Vector2(-x, -y); }
 
 		Vector2 operator+=(float o) { return Vector2(x += o, y += o); }
 		Vector2 operator-=(float o) { return Vector2(x -= o, y -= o); }
@@ -78,12 +79,17 @@ namespace fw
 
 		float DotProduct(const Vector2& o) { return x * o.x + y * o.y; }
 
+		float operator[](int i) { assert(i >= 0 && i <= 1); return *(&x + 1); }
+
 	public:
 		float x = 0;
 		float y = 0;
-
-
 	};
+
+	inline Vector2 operator+(float scalar, const Vector2& vector) { return Vector2(scalar + vector.x, scalar + vector.y); }
+	inline Vector2 operator-(float scalar, const Vector2& vector) { return Vector2(scalar - vector.x, scalar - vector.y); }
+	inline Vector2 operator*(float scalar, const Vector2& vector) { return Vector2(scalar * vector.x, scalar * vector.y); }
+	inline Vector2 operator/(float scalar, const Vector2& vector) { return Vector2(scalar / vector.x, scalar / vector.y); }
 
 	class Vector4
 	{
@@ -91,16 +97,16 @@ namespace fw
 		Vector4() { x = 0; y = 0; z = 0; w = 0; }
 		Vector4(float ax, float ay, float az, float aw) { x = ax; y = ay; z = az; w = aw; }
 
-		static const Vector4 Green()	{ return Vector4(0.0f, 1.0f, 0.0f, 1.0f); }
-		static const Vector4 Red()		{ return Vector4(1.0f, 0.0f, 0.0f, 1.0f); }
-		static const Vector4 Blue()		{ return Vector4(0.0f, 0.0f, 1.0f, 1.0f); }
-		static const Vector4 White()	{ return Vector4(1.0f, 1.0f, 1.0f, 1.0f); }
-		static const Vector4 Black()	{ return Vector4(0.0f, 0.0f, 0.0f, 1.0f); }
-		static const Vector4 Orange()	{ return Vector4(1.0f, 0.4f, 0.0f, 1.0f); }
-		static const Vector4 Yellow()	{ return Vector4(1.0f, 1.0f, 0.0f, 1.0f); }
-		static const Vector4 Purple()	{ return Vector4(0.5f, 0.0f, 0.5f, 1.0f); }
-		static const Vector4 Grey()		{ return Vector4(0.3f, 0.3f, 0.3f, 1.0f); }
-		static const Vector4 Indigo()	{ return Vector4(0.3f, 0.0f, 0.5f, 1.0f); }
+		static const Vector4 Green()	 { return Vector4(0.0f, 1.0f, 0.0f, 1.0f); }
+		static const Vector4 Red()		 { return Vector4(1.0f, 0.0f, 0.0f, 1.0f); }
+		static const Vector4 Blue()		 { return Vector4(0.0f, 0.0f, 1.0f, 1.0f); }
+		static const Vector4 White()	 { return Vector4(1.0f, 1.0f, 1.0f, 1.0f); }
+		static const Vector4 Black()	 { return Vector4(0.0f, 0.0f, 0.0f, 1.0f); }
+		static const Vector4 Orange()	 { return Vector4(1.0f, 0.4f, 0.0f, 1.0f); }
+		static const Vector4 Yellow()	 { return Vector4(1.0f, 1.0f, 0.0f, 1.0f); }
+		static const Vector4 Purple()	 { return Vector4(0.5f, 0.0f, 0.5f, 1.0f); }
+		static const Vector4 Grey()		 { return Vector4(0.3f, 0.3f, 0.3f, 1.0f); }
+		static const Vector4 Indigo()	 { return Vector4(0.3f, 0.0f, 0.5f, 1.0f); }
 		static const Vector4 DarkGreen() { return Vector4(0.0f, 0.7f, 0.0f, 1.0f); }
 
 	public:

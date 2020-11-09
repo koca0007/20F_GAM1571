@@ -58,10 +58,10 @@ namespace fw {
 		float angle = 0;
 
 		std::vector<Vector2> vertices;
+		Vector2 vertex;
 
-		for (unsigned int i = 0; i < numVertices; i++)
+		for (unsigned int i = 0; i <= numVertices; i++)
 		{
-			Vector2 vertex;
 			vertex.x = (radius * cosf(angle));
 			vertex.y = (radius * sinf(angle));
 

@@ -26,3 +26,15 @@ float meshAttribs_Enemy[] =
 
 int meshPrimType_Enemy = GL_POINTS;
 int meshNumVerts_Enemy = 1;
+
+float meshAttribs_Bomb[] =
+{
+	0.0f, 0.4f,
+	-0.2f, 0.0f,
+	0.0f, -0.4f,
+	0.2f, 0.0f
+
+};
+
+int meshPrimType_Bomb = GL_TRIANGLE_FAN;
+int meshNumVerts_Bomb = 4;

@@ -7,6 +7,7 @@
 #include "Events/GameEvents.h"
 #include "Objects/PlayerController.h"
 #include "Objects/Enemy.h"
+#include "Objects/Bomb.h"
 
 Game::Game(fw::FWCore* pFramework) : fw::GameCore(pFramework)
 {
@@ -17,13 +18,14 @@ Game::~Game()
 {
 	delete m_pShader;
 	delete m_pMeshHuman;
-	delete m_pMeshAnimal;
 	delete m_Circle;
+	delete m_InnerCircle;
 	delete m_InnerCircleMesh;
 	delete m_pPlayerController;
 	delete m_pImGuiManager;
 	delete m_pEventManager;
 	delete m_PlayerMesh;
+	delete m_BombMesh;
 
 	for (Player* player : m_Players)
 	{
@@ -55,8 +57,8 @@ void Game::Init()
 	m_pMeshHuman = new fw::Mesh();
 	m_pMeshHuman->CreateShape(meshPrimType_Human, meshNumVerts_Human, meshAttribs_Human);
 
-	m_pMeshAnimal = new fw::Mesh();
-	m_pMeshAnimal->CreateShape(meshPrimType_Enemy, meshNumVerts_Enemy, meshAttribs_Enemy);
+	m_BombMesh = new fw::Mesh();
+	m_BombMesh->CreateShape(meshPrimType_Bomb, meshNumVerts_Bomb, meshAttribs_Bomb);
 
 	//Circle
 	m_Radius = 4.5f;
@@ -72,8 +74,8 @@ void Game::Init()
 
 	//Player
 	m_PlayerMesh = new fw::Mesh();
-	player = new Player("Player", Vector2(5, 5), m_pPlayerController, m_PlayerMesh, m_pShader, Vector4::Green(), this);
-	m_Players.push_back(player);
+	m_Player = new Player("Player", Vector2(5, 5), m_pPlayerController, m_PlayerMesh, m_pShader, Vector4::Green(), this);
+	m_Players.push_back(m_Player);
 	m_PlayerMesh->CreateCircle(GL_TRIANGLE_FAN, 0.15f, (unsigned int)numberOfSides);
 
 	m_InnerCircleMesh = new fw::Mesh();
@@ -115,19 +117,19 @@ void Game::OnEvent(fw::Event* pEvent)
 
 		if (currentLevel == Level1)
 		{
-			Enemy* enemy = new Enemy("Enemy", Vector2(x1, y1), m_pMeshHuman, m_pShader, Vector4::Blue(), this, player);
+			Enemy* enemy = new Enemy("Enemy", Vector2(x1, y1), m_pMeshHuman, m_pShader, Vector4::Blue(), this, m_Player);
 			m_ActiveEnemies.push_back(enemy);
 		}
 		else if (currentLevel == Level2)
 		{
-			Enemy* enemy1 = new Enemy("Enemy", Vector2(x1, y1), m_pMeshHuman, m_pShader, Vector4::White(), this, player);
+			Enemy* enemy1 = new Enemy("Enemy", Vector2(x1, y1), m_pMeshHuman, m_pShader, Vector4::White(), this, m_Player);
 			m_ActiveEnemies.push_back(enemy1);
-			Enemy* enemy2 = new Enemy("Enemy", Vector2(x2, y2), m_pMeshHuman, m_pShader, Vector4::White(), this, player);
+			Enemy* enemy2 = new Enemy("Enemy", Vector2(x2, y2), m_pMeshHuman, m_pShader, Vector4::White(), this, m_Player);
 			m_ActiveEnemies.push_back(enemy2);
 		}
 		else if (currentLevel == Level3)
 		{
-			Enemy* enemy = new Enemy("Enemy", Vector2(x1, y1), m_pMeshHuman, m_pShader, Vector4::Orange(), this, player);
+			Enemy* enemy = new Enemy("Enemy", Vector2(x1, y1), m_pMeshHuman, m_pShader, Vector4::Orange(), this, m_Player);
 			m_ActiveEnemies.push_back(enemy);
 		}
 	}
@@ -143,6 +145,28 @@ void Game::OnEvent(fw::Event* pEvent)
 		delete pEnemy;
 	}
 
+	if (pEvent->GetType() == SpawnBombsEvent::GetStaticEventType())
+	{
+		float x = rand() % 5 + 1;
+		if (currentLevel != Level3)
+		{
+			Bomb* bomb = new Bomb("Bomb", Vector2(x, 5), m_BombMesh, m_pShader, Vector4::Grey(), this, m_Player);
+			m_Bombs.push_back(bomb);
+		}
+	}
+
+	if (pEvent->GetType() == ExplodeEvent::GetStaticEventType())
+	{
+		ExplodeEvent* pExplodeEvent = static_cast<ExplodeEvent*>(pEvent);
+		Bomb* pBomb = pExplodeEvent->GetBomb();
+
+		auto it = std::find(m_Bombs.begin(), m_Bombs.end(), pBomb);
+		m_Bombs.erase(it);
+
+		delete pBomb;
+		
+	}
+
 	if (pEvent->GetType() == PlayerDeathEvent::GetStaticEventType())
 	{
 		PlayerDeathEvent* pPlayerDeathEvent = static_cast<PlayerDeathEvent*>(pEvent);
@@ -156,8 +180,8 @@ void Game::OnEvent(fw::Event* pEvent)
 
 	if (pEvent->GetType() == RestartGameEvent::GetStaticEventType())
 	{		
-		player = new Player("Player", Vector2(5, 5), m_pPlayerController, m_PlayerMesh, m_pShader, Vector4::Green(), this);
-		m_Players.push_back(player);
+		m_Player = new Player("Player", Vector2(5, 5), m_pPlayerController, m_PlayerMesh, m_pShader, Vector4::Green(), this);
+		m_Players.push_back(m_Player);
 	}
 
 	if (pEvent->GetType() == LevelSelectEvent::GetStaticEventType())
@@ -248,6 +272,11 @@ void Game::Draw()
 		pObject->Draw();
 	}
 
+	for (Bomb* pBomb : m_Bombs)
+	{
+		pBomb->Draw();
+	}
+
 	if (currentLevel == Level3)
 	{
 		glLineWidth(10);
@@ -285,7 +314,7 @@ void Game::HandleLevels(float deltaTime)
 		{
 			m_Objects.front()->SetColor(Vector4::Red());
 			ImGui::Text("LEVEL 1");
-			if (m_LevelTimer >= 6.0f)
+			if (m_LevelTimer >= 12.0f)
 			{
 				gameState = Win;
 				m_LevelTimer = 0;
@@ -294,9 +323,9 @@ void Game::HandleLevels(float deltaTime)
 		else if (currentLevel == Level2)
 		{
 			m_Objects.front()->SetColor(Vector4::Purple());
-			player->SetColor(Vector4::Yellow());
+			m_Player->SetColor(Vector4::Yellow());
 			ImGui::Text("LEVEL 2");
-			m_WinTimer = 5.0f;
+			m_WinTimer = 10.0f;
 			if (m_LevelTimer >= 8.0f)
 			{
 				gameState = Win;
@@ -306,11 +335,11 @@ void Game::HandleLevels(float deltaTime)
 		else if (currentLevel == Level3)
 		{
 			m_Objects.front()->SetColor(Vector4::Grey());
-			player->SetColor(Vector4::DarkGreen());
+			m_Player->SetColor(Vector4::DarkGreen());
 			bDrawInnerCircle = true;
 			ImGui::Text("LEVEL 3");
 
-			if (m_LevelTimer >= 6.0f)
+			if (m_LevelTimer >= 10.0f)
 			{
 				gameState = Victory;
 				m_LevelTimer = 0;
@@ -321,6 +350,7 @@ void Game::HandleLevels(float deltaTime)
 
 void Game::HandleGameStates(float deltaTime)
 {
+	ImGui::Begin("Game");
 	if (gameState == Main)
 	{
 		m_Objects.front()->SetColor(Vector4::Red());
@@ -335,12 +365,19 @@ void Game::HandleGameStates(float deltaTime)
 	{
 		SpawnEnemies(deltaTime);
 		HandleLevels(deltaTime);
+		SpawnBombs(deltaTime);
 		DeleteEnemies();
 		HandlePlayerLoss();
-
+		BombExplode();
+		
 		for (Player* pPlayer : m_Players)
 		{
 			pPlayer->Update(deltaTime);
+		}
+
+		for (Bomb* pBomb : m_Bombs)
+		{
+			pBomb->Update(deltaTime);
 		}
 	}
 	else if (gameState == Loss)
@@ -351,14 +388,16 @@ void Game::HandleGameStates(float deltaTime)
 		{
 			gameState = Null;
 			currentLevel = Main;
-			m_pEventManager->AddEvent(new RestartGameEvent(player));
+			m_pEventManager->AddEvent(new RestartGameEvent(m_Player));
 			m_LevelTimer = 0;
+			m_BombTimer = 0;
 			m_WinTimer = 5.0f;
 		}
 	}
 	else if (gameState == Win)
 	{
 		m_WinTimer -= deltaTime;
+		m_BombTimer = 0;
 		
 		m_pEventManager->AddEvent(new HandleWinEvent());
 	}
@@ -370,12 +409,14 @@ void Game::HandleGameStates(float deltaTime)
 		{
 			gameState = Null;
 			currentLevel = Main;
-			m_pEventManager->AddEvent(new PlayerDeathEvent(player));
-			m_pEventManager->AddEvent(new RestartGameEvent(player));
+			m_pEventManager->AddEvent(new PlayerDeathEvent(m_Player));
+			m_pEventManager->AddEvent(new RestartGameEvent(m_Player));
 			m_LevelTimer = 0;
 			m_WinTimer = 5.0f;
+			m_BombTimer = 0;
 		}
 	}
+	ImGui::End();
 }
 
 void Game::SpawnEnemies(float deltaTime)
@@ -398,6 +439,7 @@ void Game::DeleteEnemies()
 		{
 			m_pEventManager->AddEvent(new DeleteEnemiesEvent(enemy));
 		}
+		
 	}
 }
 
@@ -407,9 +449,9 @@ void Game::HandlePlayerLoss()
 	{
 		Enemy* enemy = *it;
 
-		if (player->GetPosition().Distance(enemy->GetPosition()) <= 0.30f)
+		if (m_Player->GetPosition().Distance(enemy->GetPosition()) <= 0.30f)
 		{
-			m_pEventManager->AddEvent(new PlayerDeathEvent(player));
+			m_pEventManager->AddEvent(new PlayerDeathEvent(m_Player));
 			gameState = Loss;
 		}
 	}
@@ -418,11 +460,44 @@ void Game::HandlePlayerLoss()
 void Game::ResetPlayer()
 {
 	if (m_WinTimer <= 2.0f)
-		player->SetAlpha(0.0f);
+		m_Player->SetAlpha(0.0f);
 
 	if (m_WinTimer <= 1.5f)
 	{
-		player->SetPosition(player->spawnLoc);
-		player->SetAlpha(1.0f);
+		m_Player->SetPosition(m_Player->spawnLoc);
+		m_Player->SetAlpha(1.0f);
+	}
+}
+
+void Game::SpawnBombs(float deltaTime)
+{
+	m_BombTimer += deltaTime;
+	if (m_BombTimer >= (rand() % 5) + 2.0f)
+	{
+		m_pEventManager->AddEvent(new SpawnBombsEvent());
+		m_BombTimer = 0;
+	}
+}
+
+void Game::BombExplode()
+{
+	for (auto bIt = m_Bombs.begin(); bIt != m_Bombs.end(); bIt++)
+	{
+		Bomb* bomb = *bIt;
+		Vector2 bombPosition = bomb->GetPosition();
+		if (m_Player->GetPosition().Distance(bombPosition) <= 0.25f)
+		{
+			m_pEventManager->AddEvent(new ExplodeEvent(bomb));
+			for (auto it = m_ActiveEnemies.begin(); it != m_ActiveEnemies.end(); it++)
+			{
+				Enemy* enemy = *it;
+				if (m_Player->GetPosition().Distance(enemy->GetPosition()) <= 2.0f)
+				{
+					m_pEventManager->AddEvent(new DeleteEnemiesEvent(enemy));
+				}
+				
+			}
+		}
+		
 	}
 }
