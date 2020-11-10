@@ -46,7 +46,8 @@ public:
 	void HandlePlayerLoss();
 	void ResetPlayer();
 	void SpawnBombs(float deltaTime);
-	void BombExplode();
+	void BombExplode(float deltaTime);
+	void DeleteBombs();
 
 public:
 	float m_Radius;
@@ -67,10 +68,13 @@ protected:
 	float m_WinTimer;
 	float m_BombTimer = 0;
 
+	float explosionSize = 0;
+
 	fw::ImGuiManager* m_pImGuiManager = nullptr;
 	fw::ShaderProgram* m_pShader = nullptr;
 	fw::Mesh* m_pMeshHuman = nullptr;
 	fw::Mesh* m_BombMesh = nullptr;
+	fw::Mesh* m_ExplosionMesh = nullptr;
 	fw::GameCore* m_GameCore = nullptr;
 	fw::Mesh* m_Circle = nullptr;
 	fw::Mesh* m_InnerCircleMesh = nullptr;
@@ -85,4 +89,5 @@ protected:
 	std::vector<fw::GameObject*> m_Objects;
 	std::vector<Enemy*> m_ActiveEnemies;
 	std::vector<Bomb*> m_Bombs;
+	std::vector<fw::GameObject*> m_Explosions;
 };

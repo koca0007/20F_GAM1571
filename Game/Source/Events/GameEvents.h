@@ -53,13 +53,8 @@ public:
 	}
 	virtual ~SpawnEnemiesEvent() {}
 
-	static const char* GetStaticEventType() { return "DeleteEnemiesEvent"; }
+	static const char* GetStaticEventType() { return "SpawnEnemiesEvent"; }
 	virtual const char* GetType() override { return GetStaticEventType(); }
-
-	fw::GameObject* GetGameObject() { return m_pObject; }
-
-protected:
-	fw::GameObject* m_pObject = nullptr;
 };
 
 class DeleteEnemiesEvent : public fw::Event
@@ -71,14 +66,12 @@ public:
 	}
 	virtual ~DeleteEnemiesEvent() {}
 
-	static const char* GetStaticEventType() { return "SpawnEnemiesEvent"; }
+	static const char* GetStaticEventType() { return "DeleteEnemiesEvent"; }
 	virtual const char* GetType() override { return GetStaticEventType(); }
 
-	fw::GameObject* GetGameObject() { return m_pObject; }
 	Enemy* GetEnemy() { return m_Enemy; }
 
 protected:
-	fw::GameObject* m_pObject = nullptr;
 	Enemy* m_Enemy = nullptr;
 };
 
@@ -95,16 +88,16 @@ public:
 	virtual const char* GetType() override { return GetStaticEventType(); }
 };
 
-class ExplodeEvent : public fw::Event
+class DeleteBombEvent : public fw::Event
 {
 public:
-	ExplodeEvent(Bomb* bomb)
+	DeleteBombEvent(Bomb* bomb)
 	{
 		m_Bomb = bomb;
 	}
-	virtual ~ExplodeEvent() {}
+	virtual ~DeleteBombEvent() {}
 
-	static const char* GetStaticEventType() { return "ExplodeEvent"; }
+	static const char* GetStaticEventType() { return "DeleteBombEvent"; }
 	virtual const char* GetType() override { return GetStaticEventType(); }
 	
 	Bomb* GetBomb() { return m_Bomb; }
@@ -146,4 +139,36 @@ public:
 
 protected:
 	Player* m_Player = nullptr;
+};
+
+class MakeExplosionEvent : public fw::Event
+{
+public:
+	MakeExplosionEvent()
+	{
+
+	}
+	virtual ~MakeExplosionEvent() {}
+
+	static const char* GetStaticEventType() { return "MakeExplosionEvent"; }
+	virtual const char* GetType() override { return GetStaticEventType(); }
+};
+
+class DeleteExplosionEvent : public fw::Event
+{
+public:
+	DeleteExplosionEvent(fw::GameObject* bomb)
+	{
+		m_Bomb = bomb;
+	}
+	virtual ~DeleteExplosionEvent() {}
+
+	static const char* GetStaticEventType() { return "DeleteExplosionEvent"; }
+	virtual const char* GetType() override { return GetStaticEventType(); }
+
+	fw::GameObject* GetExplosion() { return m_Bomb; }
+
+
+protected:
+	fw::GameObject* m_Bomb = nullptr;
 };

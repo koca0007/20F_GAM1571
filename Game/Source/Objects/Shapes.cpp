@@ -18,14 +18,14 @@ float meshAttribs_Human[] =
 int meshPrimType_Human = GL_POINTS;
 int meshNumVerts_Human = 1;
 
-float meshAttribs_Enemy[] =
+float meshAttribs_Explosion[] =
 {
 	0.0f, 0.0f, 
 	
 };
 
-int meshPrimType_Enemy = GL_POINTS;
-int meshNumVerts_Enemy = 1;
+int meshPrimType_Explosion = GL_POINTS;
+int meshNumVerts_Explosion = 1;
 
 float meshAttribs_Bomb[] =
 {
