@@ -11,3 +11,7 @@ extern const int meshNumVerts_Explosion;
 extern const fw::VertexFormat meshAttribs_Bomb[];
 extern const int meshPrimType_Bomb;
 extern const int meshNumVerts_Bomb;
+
+extern const fw::VertexFormat meshAttribs_Rectangle[];
+extern const int meshPrimType_Rectangle;
+extern const int meshNumVerts_Rectangle;

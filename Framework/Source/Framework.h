@@ -17,6 +17,7 @@
 #include "Utility/Helpers.h"
 #include "Utility/ShaderProgram.h"
 #include "Objects/Mesh.h"
+#include "Objects/Texture.h"
 #include "ui/ImGuiManager.h"
 
 #endif //__Framework_H__

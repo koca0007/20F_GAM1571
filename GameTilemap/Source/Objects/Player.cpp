@@ -6,8 +6,8 @@
 
 
 Player::Player(std::string name, Vector2 pPosition, PlayerController* pPlayerController, fw::Mesh* pMesh, fw::ShaderProgram* pShader, 
-																								Vector4 color, fw::GameCore* pGameCore)
-	: fw::GameObject(name, pPosition, pMesh, pShader, nullptr, color, pGameCore)
+																fw::Texture* pTexture, Vector4 color, fw::GameCore* pGameCore)
+	: fw::GameObject(name, pPosition, pMesh, pShader, pTexture, color, pGameCore)
 {
 	framework = m_GameCore->GetFramework();
 	m_pPlayerController = pPlayerController;
@@ -28,23 +28,6 @@ void Player::Update(float DeltaTime)
 void Player::ApplyMovement(float delta) 
 {
 	Vector2 dir = (Vector2(0, 0));
-	Game* game = static_cast<Game*>(m_GameCore);
-	Vector2 newLoc = m_Position - spawnLoc;
-
-	if (!game->bDrawInnerCircle)
-	{
-		if ((GetPosition().Distance(spawnLoc) >= game->m_Radius))
-		{
-			m_Position = newLoc.Normalized() * game->m_Radius + spawnLoc;
-		}
-	}
-	else
-	{
-		if ((GetPosition().Distance(spawnLoc) >= game->m_InnerRadius))
-		{
-			m_Position = newLoc.Normalized() * game->m_InnerRadius + spawnLoc;
-		}
-	}
 	
 	if (m_pPlayerController->IsHeld(PlayerController::Mask::Up)) 
 	{ 

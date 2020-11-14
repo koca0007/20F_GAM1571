@@ -36,6 +36,34 @@ project "Game"
 	pchheader "GamePCH.h"
 	pchsource "Game/Source/WinMain.cpp"
 
+project "GameTilemap"
+	kind		"WindowedApp"
+	location	"build/GameTilemap"
+	debugdir	"GameTilemap"
+
+	files {
+		"GameTilemap/Source/**.cpp",
+		"GameTilemap/Source/**.h",
+		"GameTilemap/Data/**.vert",
+		"GameTilemap/Data/**.frag",
+		"premake5.lua",
+		".gitignore",
+		"GenerateProjectFiles.bat",
+	}
+
+	includedirs {
+		"GameTilemap/Source",
+		
+	}
+
+	links {
+		"Framework",
+		"opengl32",
+	}
+
+	pchheader "GamePCH.h"
+	pchsource "GameTilemap/Source/WinMain.cpp"
+
 project "Framework"
 	kind		"StaticLib"
 	location	"build/Framework"
@@ -44,12 +72,14 @@ project "Framework"
 		"Framework/Source/**.cpp",
 		"Framework/Source/**.h",
 		"Framework/Libraries/imgui/**.cpp",
-		"Framework/Libraries/imgui/**.h"
+		"Framework/Libraries/imgui/**.h",
+		"Framework/Libraries/stb/**.h",
 	}
 
 	includedirs {
 		"Framework/Source",
-		"Framework/Libraries/imgui"
+		"Framework/Libraries/imgui",
+		"Framework/Libraries/stb"
 	}
 
 	pchheader "FrameworkPCH.h"
@@ -57,4 +87,7 @@ project "Framework"
 
 	filter "files:Framework/Libraries/imgui/*.cpp"
 		flags { "NoPCH" }
+
+
+
 

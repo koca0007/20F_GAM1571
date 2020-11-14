@@ -6,6 +6,7 @@
 #include "Math/Vector.h"
 
 #include "../../Framework/Libraries/imgui/imgui.h"
+#include "Texture.h"
 
 #define PI 3.1415926535897932384626433832795028841971693993751058209749445923078164062
 
@@ -15,9 +16,9 @@ namespace fw {
 	{
 	}
 
-	Mesh::Mesh(int primitiveType, int numVertices, const float* pVertices)
+	Mesh::Mesh(int primitiveType, int numVertices, const VertexFormat* pVertices)
 	{
-
+		CreateShape(primitiveType,  numVertices, pVertices);
 	}
 
 	Mesh::~Mesh()
@@ -25,8 +26,10 @@ namespace fw {
 		glDeleteBuffers(1, &m_VBO);
 	}
 
-	void Mesh::CreateShape(int primitiveType, int numVertices, const float* pVertices)
+	void Mesh::CreateShape(int primitiveType, int numVertices, const VertexFormat* pVertices)
 	{
+		glDeleteBuffers(1, &m_VBO);
+
 		// Generate a buffer for our vertex attributes.
 		glGenBuffers(1, &m_VBO); // m_VBO is a GLuint.
 
@@ -36,44 +39,28 @@ namespace fw {
 		m_NumVertices = numVertices;
 		m_PrimitiveType = primitiveType;
 
-		// Copy our attribute data into the VBO.
-		int numAttributeComponents = m_NumVertices * 2; // x & y for each vertex.
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numAttributeComponents, pVertices, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(VertexFormat) * m_NumVertices, pVertices, GL_STATIC_DRAW);
+
 	}
 
 	void Mesh::CreateCircle(int primitiveType, float radius, unsigned int numVertices)
-	{
-		int vertexCount = 0;
-		if (m_VBO != 0)
-			glDeleteBuffers(1, &m_VBO);
-
-		glGenBuffers(1, &m_VBO);
-
-		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-
+	{	
 		assert(radius > 0.0f);
+		std::vector<VertexFormat> vertices;
 
-		float twoPi = (float)PI * 2.0f;
-		float theta = (twoPi / numVertices);
-		float angle = 0;
-
-		std::vector<Vector2> vertices;
-		Vector2 vertex;
+		float segmentRadians = 2 * PI / numVertices;
 
 		for (unsigned int i = 0; i <= numVertices; i++)
 		{
-			vertex.x = (radius * cosf(angle));
-			vertex.y = (radius * sinf(angle));
+			float angle = segmentRadians * i;
 
-			vertices.push_back(vertex);
-			vertexCount++;
-			angle += theta;
+			float x = cosf(angle) * radius;
+			float y = sinf(angle) * radius;
+
+			vertices.push_back(VertexFormat(x, y, 0, 0));
 		}
 
-		m_NumVertices = vertexCount;
-		int numAttributeComponents = vertexCount * 2;
-		m_PrimitiveType = primitiveType;
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numAttributeComponents, &vertices[0], GL_STATIC_DRAW);
+		CreateShape(primitiveType, numVertices, &vertices[0]);
 	}
 
 	void Mesh::SetUniform1f(ShaderProgram* pShader, char* name, float value)
@@ -94,7 +81,13 @@ namespace fw {
 		glUniform4f(loc, value.x, value.y, value.z, value.w);
 	}
 
-	void Mesh::Draw(Vector2 position, ShaderProgram* pShader, Vector4 color)
+	void Mesh::SetUniform1i(ShaderProgram* pShader, char* name, int value)
+	{
+		int loc = glGetUniformLocation(pShader->GetProgram(), name);
+		glUniform1i(loc, value);
+	}
+
+	void Mesh::Draw(Vector2 position, ShaderProgram* pShader, Texture* pTexture, Vector4 color)
 	{
 		glUseProgram(pShader->GetProgram());
 
@@ -103,15 +96,30 @@ namespace fw {
 
 		// Get the attribute variable’s location from the shader.
 		GLint loc = glGetAttribLocation( pShader->GetProgram(), "a_Position" );
-		glEnableVertexAttribArray(loc);
+		if (loc != -1)
+		{
+			glEnableVertexAttribArray(loc);
+			glVertexAttribPointer(loc, 2, GL_FLOAT, GL_FALSE, 16, (void*)0);
+		}
 
-		// Describe the attributes in the VBO to OpenGL.
-		glVertexAttribPointer(loc, 2, GL_FLOAT, GL_FALSE, 8, (void*)0);
+		loc = glGetAttribLocation(pShader->GetProgram(), "a_UVCoord");
+		if (loc != -1)
+		{
+			glEnableVertexAttribArray(loc);
+			glVertexAttribPointer(loc, 2, GL_FLOAT, GL_FALSE, 16, (void*)8);
+		}
 
 		/*Setup the uniforms.*/
 		{
 			SetUniform4f(pShader, "u_Color", color);
 			SetUniform2f(pShader, "u_Position", position);
+
+			if (pTexture != nullptr)
+			{
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D, pTexture->GetHandle());
+				SetUniform1i(pShader, "u_Texture", 0);
+			}	
 		}
 
 		// Draw the primitive.

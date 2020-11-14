@@ -26,6 +26,7 @@ Game::~Game()
 	delete m_pEventManager;
 	delete m_PlayerMesh;
 	delete m_BombMesh;
+	delete m_ExplosionMesh;
 
 	for (Player* player : m_Players)
 	{
@@ -40,6 +41,16 @@ Game::~Game()
 	for (fw::GameObject* go : m_Objects)
 	{
 		delete go;
+	}
+
+	for (fw::GameObject* explosion : m_Explosions)
+	{
+		delete explosion;
+	}
+
+	for (Bomb* bomb : m_Bombs)
+	{
+		delete bomb;
 	}
 }
 
@@ -67,7 +78,7 @@ void Game::Init()
 	m_Radius = 4.5f;
 	numberOfSides = 50;
 	m_Circle = new fw::Mesh();
-	m_Objects.push_back(new fw::GameObject("Circle", Vector2(5, 5), m_Circle, m_pShader, Vector4::Red(), this));
+	m_Objects.push_back(new fw::GameObject("Circle", Vector2(5, 5), m_Circle, m_pShader, nullptr, Vector4::Red(), this));
 	m_Circle->CreateCircle(GL_LINE_LOOP, m_Radius, (unsigned int)numberOfSides);
 
 	bDrawInnerCircle = false;
@@ -82,7 +93,7 @@ void Game::Init()
 	m_PlayerMesh->CreateCircle(GL_TRIANGLE_FAN, 0.15f, (unsigned int)numberOfSides);
 
 	m_InnerCircleMesh = new fw::Mesh();
-	m_InnerCircle = new fw::GameObject("InnerCircle", Vector2(5, 5), m_InnerCircleMesh, m_pShader, Vector4::Indigo(), this);
+	m_InnerCircle = new fw::GameObject("InnerCircle", Vector2(5, 5), m_InnerCircleMesh, m_pShader, nullptr, Vector4::Indigo(), this);
 	m_InnerCircleMesh->CreateCircle(GL_TRIANGLE_FAN, m_InnerRadius, (unsigned int)numberOfSides);
 
 	currentLevel = Main;
@@ -172,7 +183,7 @@ void Game::OnEvent(fw::Event* pEvent)
 
 	if (pEvent->GetType() == MakeExplosionEvent::GetStaticEventType())
 	{
-		fw::GameObject* pExplosion = new fw::GameObject("Explosion", m_Player->GetPosition(), m_ExplosionMesh, m_pShader, Vector4::Grey(), this);
+		fw::GameObject* pExplosion = new fw::GameObject("Explosion", m_Player->GetPosition(), m_ExplosionMesh, m_pShader, nullptr, Vector4::Grey(), this);
 		m_Explosions.push_back(pExplosion);
 	}
 
