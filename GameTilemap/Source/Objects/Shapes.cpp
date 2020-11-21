@@ -11,6 +11,8 @@
 //0.15f, .3f,
 //0.1f, 0.0f,
 
+
+
 const fw::VertexFormat meshAttribs_Human[] =
 {
 	fw::VertexFormat{0.0f, 0.0f,		0, 0}
@@ -51,3 +53,21 @@ const fw::VertexFormat meshAttribs_Rectangle[] =
 
 const int meshPrimType_Rectangle = GL_TRIANGLE_FAN;
 const int meshNumVerts_Rectangle = sizeof(meshAttribs_Rectangle) / sizeof(fw::VertexFormat);
+
+
+
+const fw::VertexFormat meshAttribs_Box[] =
+{
+	fw::VertexFormat{0.0f, 0.0f,	0,0, },
+	fw::VertexFormat{0.0f, 1.0f,	0,1, },
+	fw::VertexFormat{1.0f, 1.0f,	1,1, },
+	fw::VertexFormat{1.0f, 0.0f,	1,0	 },
+
+	//fw::VertexFormat{0.0f, 0.0f,	780 / 1024.0f,			383 / 512.0f,			},
+	//fw::VertexFormat{0.0f, 1.0f,	780 / 1024.0f,			(383 + 64) / 512.0f,	},
+	//fw::VertexFormat{1.0f, 1.0f,	(780 + 64) / 1024.0f,	(383 + 64) / 512.0f,	},
+	//fw::VertexFormat{1.0f, 0.0f,	(780 + 64) / 1024.0f,	383 / 512.0f			},
+};
+
+const int meshPrimType_Box = GL_TRIANGLE_FAN;
+const int meshNumVerts_Box = sizeof(meshAttribs_Box) / sizeof(fw::VertexFormat);

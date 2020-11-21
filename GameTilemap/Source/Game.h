@@ -38,7 +38,7 @@ protected:
 	fw::ImGuiManager* m_pImGuiManager = nullptr;
 	fw::GameCore* m_GameCore = nullptr;
 
-	Player* m_Player;
+	Player* m_Player = nullptr;
 	PlayerController* m_pPlayerController = nullptr;
 
 	std::map<std::string, fw::ShaderProgram*> m_pShaders;

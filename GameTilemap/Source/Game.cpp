@@ -8,6 +8,9 @@
 #include "Objects/PlayerController.h"
 #include "Objects/Enemy.h"
 #include "Objects/Bomb.h"
+#include "../../Framework/Source/Objects/SpriteSheet.h"
+
+namespace rj = rapidjson;
 
 Game::Game(fw::FWCore* pFramework) : fw::GameCore(pFramework)
 {
@@ -61,9 +64,28 @@ void Game::Init()
 
 	m_pShaders["Basic"] = new fw::ShaderProgram("Data/Basic.vert", "Data/Basic.frag");
 
-	m_pMeshes["Player"] = new fw::Mesh(meshPrimType_Rectangle, meshNumVerts_Rectangle, meshAttribs_Rectangle);
+	m_pMeshes["Player"] = new fw::Mesh(meshPrimType_Box, meshNumVerts_Box, meshAttribs_Box);
 
-	m_pTextures["Test"] = new fw::Texture("Data/Textures/test2.png");
+	m_pTextures["Test"] = new fw::Texture("Data/Textures/Sokoban.png");
+
+	/*fw::SpriteSheet* spriteSheet = new fw::SpriteSheet();*/
+	
+
+	/*int value = document["testInt"].GetInt();
+	const char* valueStr = document["testString"].GetString();
+
+	int t0 = document["testArray"][0].GetInt();
+
+	rj::Value& testObject = document["testObject"];
+	int a = testObject["a"].GetInt();
+	int bp = 1;*/
+
+	/*if (info.name == "test");
+	struct SpriteInfo
+	{
+		std::string name;
+		int value;
+	};*/
 
 	m_Player = new Player("Player", Vector2(5, 5), m_pPlayerController, m_pMeshes["Player"], m_pShaders["Basic"], m_pTextures["Test"], Vector4::Grey(), this);
 	m_Players.push_back(m_Player);

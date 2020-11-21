@@ -1,0 +1,8 @@
+{
+	
+	"testInt": 5,
+	"testString": "Hello",
+	"testArray": [ 1, 2, 3 ],
+	"testObject": { "a": 1, "b": 2 }
+
+}

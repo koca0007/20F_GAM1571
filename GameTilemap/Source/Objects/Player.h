@@ -29,4 +29,5 @@ protected:
 	float m_Speed;
 	Vector2 lastPos;	
 	PlayerController* m_pPlayerController = nullptr;
+	float i = 0;
 };

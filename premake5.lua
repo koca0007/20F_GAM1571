@@ -46,6 +46,7 @@ project "GameTilemap"
 		"GameTilemap/Source/**.h",
 		"GameTilemap/Data/**.vert",
 		"GameTilemap/Data/**.frag",
+		"GameTilemap/Data/Textures/**.json",
 		"premake5.lua",
 		".gitignore",
 		"GenerateProjectFiles.bat",
@@ -74,6 +75,7 @@ project "Framework"
 		"Framework/Libraries/imgui/**.cpp",
 		"Framework/Libraries/imgui/**.h",
 		"Framework/Libraries/stb/**.h",
+		"Framework/Libraries/rapidjson/**.h",
 	}
 
 	includedirs {

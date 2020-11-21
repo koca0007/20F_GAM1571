@@ -16,7 +16,7 @@ namespace fw
 
 		void SetX(float o) { x = o; }
 		void SetY(float o) { y = o; }
-		void SetXY(Vector2 o) { x = o.x, y = o.y; }
+		void Set(Vector2 o) { x = o.x, y = o.y; }
 
 		float GetPositionX() { return x; }
 		float GetPositionY() { return y; }

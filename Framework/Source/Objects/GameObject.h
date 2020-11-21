@@ -22,7 +22,6 @@ namespace fw {
 
 		std::string GetName();
 		Vector2 m_Position;
-
 		
 		void SetColor(Vector4 newColor) { m_Color = newColor; }
 		Vector4 GetColor() { return m_Color; }
@@ -41,6 +40,9 @@ namespace fw {
 		Texture* m_pTexture = nullptr;
 		GameCore* m_GameCore;
 		Vector4 m_Color = Vector4(1, 1, 1, 1);
+
+		Vector2 m_UVScale  = Vector2(1, 1);
+		Vector2 m_UVOffset = Vector2(0, 0);
 	};
 
 } // namespace fw

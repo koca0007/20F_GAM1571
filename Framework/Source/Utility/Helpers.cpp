@@ -55,7 +55,7 @@ namespace fw {
 
 			filecontents = new char[size + 1];
 			fread(filecontents, size, 1, filehandle);
-			filecontents[size] = 0;
+			filecontents[size] = '\0';
 
 			if (length)
 				*length = size;

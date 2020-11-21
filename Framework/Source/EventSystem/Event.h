@@ -4,6 +4,8 @@ namespace fw
 {
 	class Event
 	{
+		friend class EventManager;
+
 	public:
 		Event();
 		virtual ~Event();
