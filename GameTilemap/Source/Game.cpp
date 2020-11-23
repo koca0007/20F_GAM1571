@@ -59,33 +59,11 @@ void Game::Init()
 	m_pImGuiManager = new fw::ImGuiManager(m_pFramework);
 	m_pImGuiManager->Init();
 	m_pEventManager = new fw::EventManager();
-	
 	m_pPlayerController = new PlayerController();
 
 	m_pShaders["Basic"] = new fw::ShaderProgram("Data/Basic.vert", "Data/Basic.frag");
-
 	m_pMeshes["Player"] = new fw::Mesh(meshPrimType_Box, meshNumVerts_Box, meshAttribs_Box);
-
 	m_pTextures["Test"] = new fw::Texture("Data/Textures/Sokoban.png");
-
-	/*fw::SpriteSheet* spriteSheet = new fw::SpriteSheet();*/
-	
-
-	/*int value = document["testInt"].GetInt();
-	const char* valueStr = document["testString"].GetString();
-
-	int t0 = document["testArray"][0].GetInt();
-
-	rj::Value& testObject = document["testObject"];
-	int a = testObject["a"].GetInt();
-	int bp = 1;*/
-
-	/*if (info.name == "test");
-	struct SpriteInfo
-	{
-		std::string name;
-		int value;
-	};*/
 
 	m_Player = new Player("Player", Vector2(5, 5), m_pPlayerController, m_pMeshes["Player"], m_pShaders["Basic"], m_pTextures["Test"], Vector4::Grey(), this);
 	m_Players.push_back(m_Player);

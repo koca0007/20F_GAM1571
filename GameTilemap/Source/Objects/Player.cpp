@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "Objects/PlayerController.h"
 #include "Game.h"
+#include "../../Framework/Source/Objects/SpriteSheet.h"
 
 
 Player::Player(std::string name, Vector2 pPosition, PlayerController* pPlayerController, fw::Mesh* pMesh, fw::ShaderProgram* pShader, 
@@ -14,100 +15,71 @@ Player::Player(std::string name, Vector2 pPosition, PlayerController* pPlayerCon
 	m_Speed = 4.0f;
 	spawnLoc = pPosition;
 
-	m_UVScale.Set(Vector2(64.0f / 1024.0f, 64.0f / 512.0f));
-	m_UVOffset.Set(Vector2(780.0f / 1024.0f, 383.0f / 512.0f));
+	spriteSheet = new fw::SpriteSheet("Data/Textures/Sokoban.json");
+	m_UVScale.Set(spriteSheet->GetUVScale("Player/player_01"));
+	m_UVOffset = spriteSheet->GetSprite("Player/player_01").UVOffset;
 }
 
 Player::~Player()
 {
-
+	delete spriteSheet;
 }
 
 void Player::Update(float DeltaTime)
 {
 	ApplyMovement(DeltaTime);
-
-	// Display player walk down frame 1
 }
 
 void Player::ApplyMovement(float delta) 
 {
 	Vector2 dir = (Vector2(0, 0));
+	
+	animTimer += delta;
 
+	//Increment animIndex at a certain interval
+	if (animTimer >= 0.10f)
+	{
+		animTimer = 0;
+		animIndex += 1;
+
+		//Reset animIndex
+		if (animIndex == maxAnimIndex + 1)
+		{
+			animIndex = 1;
+		}
+	}
+	
 	if (m_pPlayerController->IsHeld(PlayerController::Mask::Up)) 
 	{ 
 		dir.y = 1;
-		i += delta;
-		if (i >= 0.10f && i <= 0.20f)
-		{
-			m_UVOffset.Set(Vector2(845.0f / 1024.0f, 448.0f / 512.0f));
-		}
-		if (i > 0.2f && i <= 0.30f)
-		{
-			m_UVOffset.Set(Vector2(520.0f / 1024.0f, 58.0f / 512.0f));
-		}
-		if (i > 0.3f)
-		{
-			m_UVOffset.Set(Vector2(585.0f / 1024.0f, 123.0f / 512.0f));
-			i = 0;
-		}
+		ApplyAnim("WalkUp", 3);
 	}
 	if (m_pPlayerController->IsHeld(PlayerController::Mask::Down))
 	{
 		dir.y = -1;
-		i += delta;
-		if (i >= 0.10f && i <= 0.20f)
-		{
-			m_UVOffset.Set(Vector2(650.0f / 1024.0f, 188.0f / 512.0f));
-		}
-		if (i > 0.2f && i <= 0.30f)
-		{
-			m_UVOffset.Set(Vector2(715.0f / 1024.0f, 253.0f / 512.0f));
-		}
-		if (i > 0.3f)
-		{
-			m_UVOffset.Set(Vector2(780.0f / 1024.0f, 318.0f / 512.0f));
-			i = 0;
-		}
+		ApplyAnim("WalkDown", 3);
 	}
 	if (m_pPlayerController->IsHeld(PlayerController::Mask::Left))
 	{
 		dir.x = -1;
-		i += delta;
-		if (i >= 0.10f && i <= 0.20f)
-		{
-			m_UVOffset.Set(Vector2(845.0f / 1024.0f, 318.0f / 512.0f));
-		}
-		if (i > 0.2f && i <= 0.30f)
-		{
-			m_UVOffset.Set(Vector2(910.0f / 1024.0f, 383.0f / 512.0f));
-		}
-		if (i > 0.3f)
-		{
-			m_UVOffset.Set(Vector2(650.0f / 1024.0f, 58.0f / 512.0f));
-			i = 0;
-		}
+		ApplyAnim("WalkLeft", 3);
 	}
 	if (m_pPlayerController->IsHeld(PlayerController::Mask::Right))
 	{
 		dir.x = 1;
-		i += delta;
-		if (i >= 0.10f && i <= 0.20f)
-		{
-			m_UVOffset.Set(Vector2(650.0f / 1024.0f, 123.0f / 512.0f));
-		}
-		if (i > 0.2f && i <= 0.30f)
-		{
-			m_UVOffset.Set(Vector2(715.0f / 1024.0f, 188.0f / 512.0f));
-		}
-		if (i > 0.3f)
-		{
-			m_UVOffset.Set(Vector2(780.0f / 1024.0f, 253.0f / 512.0f));
-			i = 0;
-		}
-		
+		ApplyAnim("WalkRight", 3);
 	}
 
 	dir.Normalize();
 	m_Position += dir * m_Speed * delta;
+}
+
+void Player::ApplyAnim(std::string animName, int maxIndex )
+{
+	//Declare this animation's max animation count
+	maxAnimIndex = maxIndex;
+	//Reset animIndex if exceeds this animation's max index
+	animIndex = (animIndex > maxAnimIndex) ? 1 : animIndex;
+	//Set the UVOffset according to the name of the sprite
+	m_UVOffset.Set(spriteSheet->GetSprite(spriteSheet->GetSpriteName(animName + std::to_string(animIndex))).UVOffset);
 }

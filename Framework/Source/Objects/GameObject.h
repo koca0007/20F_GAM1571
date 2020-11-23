@@ -14,7 +14,7 @@ namespace fw {
 	{
 	public:
 		GameObject();
-		GameObject(std::string name, Vector2 pos, Mesh* pMesh, ShaderProgram* pShader, fw::Texture* pTexture, Vector4 color, GameCore* pGameCore);
+		GameObject(std::string name, Vector2 pos, Mesh* pMesh, ShaderProgram* pShader, Texture* pTexture, Vector4 color, GameCore* pGameCore);
 		virtual ~GameObject();
 
 		virtual void Update(float DeltaTime);

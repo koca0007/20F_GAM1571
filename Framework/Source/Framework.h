@@ -18,6 +18,7 @@
 #include "Utility/ShaderProgram.h"
 #include "Objects/Mesh.h"
 #include "Objects/Texture.h"
+#include "Objects/SpriteSheet.h"
 #include "ui/ImGuiManager.h"
 
 #endif //__Framework_H__
