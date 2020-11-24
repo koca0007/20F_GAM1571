@@ -10,10 +10,10 @@ namespace fw
 	struct SpriteInfo
 	{
 		std::string name = "";
-		float x = 0;
-		float y = 0;
-		float w = 64;
-		float h = 64;
+		int x = 0;
+		int y = 0;
+		int w = 64;
+		int h = 64;
 		Vector2 UVOffset;
 	};
 

@@ -9,6 +9,7 @@ namespace fw
 		char* jsonString = fw::LoadCompleteFile(fileName.c_str(), nullptr);
 		rapidjson::Document document;
 		document.Parse(jsonString);
+		delete[] jsonString;
 
 		m_Texture = document["Texture"].GetString();
 		m_Width = document["Width"].GetInt();
@@ -22,10 +23,9 @@ namespace fw
 			spriteInfo.y = sprite["Y"].GetInt();
 			spriteInfo.w = sprite["W"].GetInt();
 			spriteInfo.h = sprite["H"].GetInt();
-			spriteInfo.UVOffset = Vector2(spriteInfo.x / m_Width, spriteInfo.y / m_Height);
+			spriteInfo.UVOffset = Vector2((float)spriteInfo.x / m_Width, (float)spriteInfo.y / m_Height);
 			m_Sprites.insert(std::pair<std::string, SpriteInfo>(spriteInfo.name, spriteInfo));
 		}
-
 	}
 
 	SpriteSheet::~SpriteSheet()
@@ -35,7 +35,7 @@ namespace fw
 
 	Vector2 SpriteSheet::GetUVScale(std::string spriteName)
 	{
-		return Vector2(m_Sprites[spriteName].w / m_Width, m_Sprites[spriteName].h / m_Height);
+		return Vector2((float)m_Sprites[spriteName].w / m_Width, (float)m_Sprites[spriteName].h / m_Height);
 	}
 
 	// Return Sprite by name
@@ -62,6 +62,8 @@ namespace fw
 		else if (animName == "WalkLeft1") { return "Player/player_14"; }
 		else if (animName == "WalkLeft2") { return "Player/player_15"; }
 		else if (animName == "WalkLeft3") { return "Player/player_16"; }
+
+		return "";
 	}
 }
 
