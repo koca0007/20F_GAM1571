@@ -3,7 +3,7 @@ workspace "Game"
 	platforms		{ "x64" }
 	location		"build"
 	characterset	"MBCS"
-	startproject	"Game"
+	startproject	"GameTilemap"
 
 	filter "configurations:Debug"
         symbols     "on"

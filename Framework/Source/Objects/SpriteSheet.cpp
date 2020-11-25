@@ -35,7 +35,7 @@ namespace fw
 
 	Vector2 SpriteSheet::GetUVScale(std::string spriteName)
 	{
-		return Vector2((float)m_Sprites[spriteName].w / m_Width, (float)m_Sprites[spriteName].h / m_Height);
+		return Vector2((float)m_Sprites.at(spriteName).w / m_Width, (float)m_Sprites.at(spriteName).h / m_Height);
 	}
 
 	// Return Sprite by name

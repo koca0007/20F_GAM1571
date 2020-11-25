@@ -48,7 +48,7 @@ namespace fw {
 		assert(radius > 0.0f);
 		std::vector<VertexFormat> vertices;
 
-		float segmentRadians = 2 * PI / numVertices;
+		float segmentRadians = 2 * (float)PI / numVertices;
 
 		for (unsigned int i = 0; i <= numVertices; i++)
 		{

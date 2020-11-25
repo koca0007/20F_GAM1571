@@ -91,6 +91,20 @@ namespace fw
 	inline Vector2 operator*(float scalar, const Vector2& vector) { return Vector2(scalar * vector.x, scalar * vector.y); }
 	inline Vector2 operator/(float scalar, const Vector2& vector) { return Vector2(scalar / vector.x, scalar / vector.y); }
 
+	
+	class iVector2
+	{
+	public:
+		iVector2() { x = 0; y = 0; }
+		iVector2(int nx, int ny) { x = nx; y = ny; }
+
+		void Set(int nx, int ny) { x = nx; y = ny; }
+
+	public:
+		int x;
+		int y;
+	};
+
 	class Vector4
 	{
 	public:

@@ -9,7 +9,7 @@ class Bomb : public fw::GameObject
 public:
 
 	Bomb(std::string name, Vector2 position, fw::Mesh* mesh, fw::ShaderProgram* shader, fw::Vector4 color, fw::GameCore* gameCore, Player* player);
-	~Bomb();
+	virtual ~Bomb();
 
 	virtual void Update(float DeltaTime) override;
 

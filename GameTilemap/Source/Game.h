@@ -22,16 +22,6 @@ public:
 	virtual void Update(float deltaTime) override;
 	virtual void Draw() override;
 
-	void HandleLevels(float deltaTime);
-	void HandleGameStates(float deltaTime);
-	void SpawnEnemies(float deltaTime);
-	void DeleteEnemies();
-	void HandlePlayerLoss();
-	void ResetPlayer();
-	void SpawnBombs(float deltaTime);
-	void BombExplode(float deltaTime);
-	void DeleteBombs();
-
 protected:
 	bool m_VSyncEnabled = true;
 
