@@ -7,6 +7,7 @@ class PlayerController;
 class Player;
 class Enemy;
 class Bomb;
+class Tilemap;
 
 class Game : public fw::GameCore
 {
@@ -34,6 +35,9 @@ protected:
 	std::map<std::string, fw::ShaderProgram*> m_pShaders;
 	std::map<std::string, fw::Mesh*> m_pMeshes;
 	std::map<std::string, fw::Texture*> m_pTextures;
+	std::map<std::string, fw::SpriteSheet*> m_pSpriteSheets;
+
+	Tilemap* m_Tilemap = nullptr;
 
 	std::vector<Player*> m_Players;
 	std::vector<fw::GameObject*> m_Objects;

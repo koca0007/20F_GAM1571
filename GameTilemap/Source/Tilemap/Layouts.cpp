@@ -1,18 +1,22 @@
 #include "GamePCH.h"
 
-#include "Tilemap/Tilemap.h"
 #include "Layouts.h"
 
 using TT = Tilemap::TileType;
 
-const int TileLayout_Width = 8;
-const int TileLayout_Height = 8;
 
-static const Tilemap::TileType TileLayout[] =
+const int Level1Layout_Width = 10;
+const int Level1Layout_Height = 10;
+static const Tilemap::TileType Level1Layout[] =
 {
-	TT::Wall, TT::Wall,  TT::Wall, 
-	TT::Wall, TT::Floor, TT::Wall,
-	TT::Wall, TT::Wall,  TT::Wall,
+	TT::TT_Wall, TT::TT_Wall,  TT::TT_Wall,  TT::TT_Wall,	TT::TT_Wall,   TT::TT_Wall,	  TT::TT_Wall,  TT::TT_Wall, TT::TT_Wall,  TT::TT_Wall,
+	TT::TT_Wall, TT::TT_Floor, TT::TT_Wall,  TT::TT_Wall,	TT::TT_Floor,  TT::TT_Floor,  TT::TT_Floor, TT::TT_Floor,TT::TT_Floor, TT::TT_Wall,
+	TT::TT_Wall, TT::TT_Floor, TT::TT_Floor, TT::TT_Wall,	TT::TT_Floor,  TT::TT_Floor,  TT::TT_Floor, TT::TT_Floor,TT::TT_Floor, TT::TT_Wall,
+	TT::TT_Wall, TT::TT_Floor, TT::TT_Floor, TT::TT_Floor,	TT::TT_Floor,  TT::TT_Floor,  TT::TT_Floor, TT::TT_Floor,TT::TT_Floor, TT::TT_Wall,
+	TT::TT_Wall, TT::TT_Floor, TT::TT_Floor, TT::TT_Floor,	TT::TT_Floor,  TT::TT_Floor,  TT::TT_Floor, TT::TT_Floor,TT::TT_Floor, TT::TT_Wall,
+	TT::TT_Wall, TT::TT_Floor, TT::TT_Floor, TT::TT_Floor,	TT::TT_Floor,  TT::TT_Floor,  TT::TT_Floor, TT::TT_Floor,TT::TT_Floor, TT::TT_Wall,
+	TT::TT_Wall, TT::TT_Grass, TT::TT_Grass, TT::TT_Floor,	TT::TT_Floor,  TT::TT_Floor,  TT::TT_Floor, TT::TT_Floor,TT::TT_Floor, TT::TT_Wall,
+	TT::TT_Wall, TT::TT_Grass, TT::TT_Grass, TT::TT_Floor,	TT::TT_Floor,  TT::TT_Floor,  TT::TT_Floor, TT::TT_Floor,TT::TT_Floor, TT::TT_Wall,
+	TT::TT_Wall, TT::TT_Grass, TT::TT_Grass, TT::TT_Floor,	TT::TT_Floor,  TT::TT_Floor,  TT::TT_Floor, TT::TT_Floor,TT::TT_Wall,  TT::TT_Wall,
+	TT::TT_Wall, TT::TT_Wall,  TT::TT_Wall,  TT::TT_Wall,	TT::TT_Wall,   TT::TT_Wall,	  TT::TT_Wall,  TT::TT_Wall, TT::TT_Wall,  TT::TT_Wall,
 };
-
-

@@ -23,6 +23,7 @@ namespace fw
 			spriteInfo.y = sprite["Y"].GetInt();
 			spriteInfo.w = sprite["W"].GetInt();
 			spriteInfo.h = sprite["H"].GetInt();
+			spriteInfo.UVScale = Vector2((float)spriteInfo.w / m_Width, (float)spriteInfo.h / m_Height);
 			spriteInfo.UVOffset = Vector2((float)spriteInfo.x / m_Width, (float)spriteInfo.y / m_Height);
 			m_Sprites.insert(std::pair<std::string, SpriteInfo>(spriteInfo.name, spriteInfo));
 		}

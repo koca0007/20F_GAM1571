@@ -15,6 +15,7 @@ namespace fw
 		int w = 64;
 		int h = 64;
 		Vector2 UVOffset;
+		Vector2 UVScale;
 	};
 
 	class SpriteSheet

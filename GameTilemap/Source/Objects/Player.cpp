@@ -5,7 +5,6 @@
 #include "Game.h"
 #include "../../Framework/Source/Objects/SpriteSheet.h"
 
-
 Player::Player(std::string name, Vector2 pPosition, PlayerController* pPlayerController, fw::Mesh* pMesh, fw::ShaderProgram* pShader, 
 																fw::Texture* pTexture, Vector4 color, fw::GameCore* pGameCore)
 	: fw::GameObject(name, pPosition, pMesh, pShader, pTexture, color, pGameCore)

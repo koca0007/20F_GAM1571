@@ -9,6 +9,8 @@
 #include "Objects/Enemy.h"
 #include "Objects/Bomb.h"
 #include "../../Framework/Source/Objects/SpriteSheet.h"
+#include "Tilemap/Tilemap.h"
+#include "Tilemap/Layouts.h"
 
 namespace rj = rapidjson;
 
@@ -22,6 +24,7 @@ Game::~Game()
 	delete m_pPlayerController;
 	delete m_pImGuiManager;
 	delete m_pEventManager;
+	delete m_Tilemap;
 
 	for (Player* player : m_Players)
 	{
@@ -47,6 +50,11 @@ Game::~Game()
 	{
 		delete object.second;
 	}
+
+	for (auto object : m_pSpriteSheets)
+	{
+		delete object.second;
+	}
 }
 
 void Game::Init()
@@ -62,7 +70,11 @@ void Game::Init()
 
 	m_pShaders["Basic"] = new fw::ShaderProgram("Data/Basic.vert", "Data/Basic.frag");
 	m_pMeshes["Player"] = new fw::Mesh(meshPrimType_Box, meshNumVerts_Box, meshAttribs_Box);
+	m_pMeshes["Tilemap"] = new fw::Mesh(meshPrimType_Sprite, meshNumVerts_Sprite, meshAttribs_Sprite);
 	m_pTextures["Player"] = new fw::Texture("Data/Textures/Sokoban.png");
+	m_pSpriteSheets["Sokoban"] = new fw::SpriteSheet("Data/Textures/Sokoban.json");
+
+	m_Tilemap = new Tilemap(Level1Layout, Level1Layout_Width, Level1Layout_Height, nullptr, m_pSpriteSheets["Sokoban"], m_pMeshes["Tilemap"]);
 
 	m_Player = new Player("Player", Vector2(5, 5), m_pPlayerController, m_pMeshes["Player"], m_pShaders["Basic"], m_pTextures["Player"], Vector4::Grey(), this);
 	m_Players.push_back(m_Player);
@@ -114,16 +126,14 @@ void Game::Draw()
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	/*for (fw::GameObject* pObject : m_Objects)
-	{
-		glLineWidth(10);
-		pObject->Draw();
-	}*/
+	m_Tilemap->Draw();
 
 	for (Player* pPlayer : m_Players)
 	{
 		pPlayer->Draw();
 	}
+
+	
 
 	m_pImGuiManager->EndFrame();
 }
