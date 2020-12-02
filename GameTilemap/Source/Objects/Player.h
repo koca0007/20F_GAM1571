@@ -13,7 +13,7 @@ class Player : public fw::GameObject
 {
 public:
 
-	Player(std::string name, Vector2 pPosition, PlayerController* pPlayerController, fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture, Vector4 color, fw::GameCore* pGameCore);
+	Player(std::string name, Vector2 pPosition, PlayerController* pPlayerController, fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture, Vector4 color, fw::GameCore* pGameCore, Vector2 pObjectScale);
 	virtual ~Player() override;
 
 	virtual void Update(float DeltaTime) override;
@@ -24,6 +24,7 @@ public:
 
 	void ApplyAnim(std::string animName, int maxIndex);
 
+	std::string GetSpriteName(std::string animName);
 public:
 	Vector2 spawnLoc;
 	fw::SpriteSheet* spriteSheet;

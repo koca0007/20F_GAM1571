@@ -6,8 +6,8 @@
 #include "../../Framework/Source/Objects/SpriteSheet.h"
 
 Player::Player(std::string name, Vector2 pPosition, PlayerController* pPlayerController, fw::Mesh* pMesh, fw::ShaderProgram* pShader, 
-																fw::Texture* pTexture, Vector4 color, fw::GameCore* pGameCore)
-	: fw::GameObject(name, pPosition, pMesh, pShader, pTexture, color, pGameCore)
+																fw::Texture* pTexture, Vector4 color, fw::GameCore* pGameCore, Vector2 pObjectScale)
+	: fw::GameObject(name, pPosition, pMesh, pShader, pTexture, color, pGameCore, pObjectScale)
 {
 	framework = m_GameCore->GetFramework();
 	m_pPlayerController = pPlayerController;
@@ -80,5 +80,27 @@ void Player::ApplyAnim(std::string animName, int maxIndex )
 	//Reset animIndex if exceeds this animation's max index
 	animIndex = (animIndex > maxAnimIndex) ? 1 : animIndex;
 	//Set the UVOffset according to the name of the sprite
-	m_UVOffset.Set(spriteSheet->GetSprite(spriteSheet->GetSpriteName(animName + std::to_string(animIndex))).UVOffset);
+	m_UVOffset.Set(spriteSheet->GetSprite(GetSpriteName(animName + std::to_string(animIndex))).UVOffset);
 }
+
+std::string Player::GetSpriteName(std::string animName)
+{
+		if (animName == "WalkUp1")  {return	"Player/player_02"; }
+	else if (animName == "WalkUp2") { return "Player/player_03"; }
+	else if (animName == "WalkUp3") { return "Player/player_04"; }
+
+	else if (animName == "WalkDown1") { return "Player/player_05"; }
+	else if (animName == "WalkDown2") { return "Player/player_06"; }
+	else if (animName == "WalkDown3") { return "Player/player_07"; }
+
+	else if (animName == "WalkRight1") { return "Player/player_11"; }
+	else if (animName == "WalkRight2") { return "Player/player_12"; }
+	else if (animName == "WalkRight3") { return "Player/player_13"; }
+
+	else if (animName == "WalkLeft1") { return "Player/player_14"; }
+	else if (animName == "WalkLeft2") { return "Player/player_15"; }
+	else if (animName == "WalkLeft3") { return "Player/player_16"; }
+
+	return "";
+}
+

@@ -38,6 +38,8 @@ protected:
 	fw::ShaderProgram* m_pShader = nullptr;
 	fw::Texture* m_pTexture = nullptr;
 
+	Vector2 worldPos;
+
 	Vector2 m_TileSize = Vector2(2, 2); // How big in world units is the tile
 	iVector2 m_MapSize; // How many tiles big is our map.
 

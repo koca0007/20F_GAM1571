@@ -45,26 +45,6 @@ namespace fw
 		return m_Sprites[name];
 	}
 
-	// Return Sprite name by animation 
-	std::string SpriteSheet::GetSpriteName(std::string animName)
-	{
-			 if (animName == "WalkUp1")	{ return "Player/player_02"; }
-		else if (animName == "WalkUp2") { return "Player/player_03"; }
-		else if (animName == "WalkUp3") { return "Player/player_04"; }
-				 
-		else if (animName == "WalkDown1") { return "Player/player_05"; }
-		else if (animName == "WalkDown2") { return "Player/player_06"; }
-		else if (animName == "WalkDown3") { return "Player/player_07"; }
-
-		else if (animName == "WalkRight1") { return "Player/player_11"; }
-		else if (animName == "WalkRight2") { return "Player/player_12"; }
-		else if (animName == "WalkRight3") { return "Player/player_13"; }
-
-		else if (animName == "WalkLeft1") { return "Player/player_14"; }
-		else if (animName == "WalkLeft2") { return "Player/player_15"; }
-		else if (animName == "WalkLeft3") { return "Player/player_16"; }
-
-		return "";
-	}
+	// Return Sprite name by animation
 }
 

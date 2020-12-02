@@ -6,8 +6,8 @@
 
 
 Player::Player(std::string name, Vector2 pPosition, PlayerController* pPlayerController, fw::Mesh* pMesh, fw::ShaderProgram* pShader, 
-																								Vector4 color, fw::GameCore* pGameCore)
-	: fw::GameObject(name, pPosition, pMesh, pShader, nullptr, color, pGameCore)
+																								Vector4 color, fw::GameCore* pGameCore, Vector2 pObjectScale)
+	: fw::GameObject(name, pPosition, pMesh, pShader, nullptr, color, pGameCore, pObjectScale)
 {
 	framework = m_GameCore->GetFramework();
 	m_pPlayerController = pPlayerController;

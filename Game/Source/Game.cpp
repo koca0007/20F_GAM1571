@@ -78,7 +78,7 @@ void Game::Init()
 	m_Radius = 4.5f;
 	numberOfSides = 50;
 	m_Circle = new fw::Mesh();
-	m_Objects.push_back(new fw::GameObject("Circle", Vector2(5, 5), m_Circle, m_pShader, nullptr, Vector4::Red(), this));
+	m_Objects.push_back(new fw::GameObject("Circle", Vector2(5, 5), m_Circle, m_pShader, nullptr, Vector4::Red(), this, Vector2(1,1)));
 	m_Circle->CreateCircle(GL_LINE_LOOP, m_Radius, (unsigned int)numberOfSides);
 
 	bDrawInnerCircle = false;
@@ -88,12 +88,12 @@ void Game::Init()
 
 	//Player
 	m_PlayerMesh = new fw::Mesh();
-	m_Player = new Player("Player", Vector2(5, 5), m_pPlayerController, m_PlayerMesh, m_pShader, Vector4::Green(), this);
+	m_Player = new Player("Player", Vector2(5, 5), m_pPlayerController, m_PlayerMesh, m_pShader, Vector4::Green(), this, Vector2(1,1));
 	m_Players.push_back(m_Player);
 	m_PlayerMesh->CreateCircle(GL_TRIANGLE_FAN, 0.15f, (unsigned int)numberOfSides);
 
 	m_InnerCircleMesh = new fw::Mesh();
-	m_InnerCircle = new fw::GameObject("InnerCircle", Vector2(5, 5), m_InnerCircleMesh, m_pShader, nullptr, Vector4::Indigo(), this);
+	m_InnerCircle = new fw::GameObject("InnerCircle", Vector2(5, 5), m_InnerCircleMesh, m_pShader, nullptr, Vector4::Indigo(), this, Vector2(1, 1));
 	m_InnerCircleMesh->CreateCircle(GL_TRIANGLE_FAN, m_InnerRadius, (unsigned int)numberOfSides);
 
 	currentLevel = Main;
@@ -131,19 +131,19 @@ void Game::OnEvent(fw::Event* pEvent)
 
 		if (currentLevel == Level1)
 		{
-			Enemy* enemy = new Enemy("Enemy", Vector2(x1, y1), m_pMeshHuman, m_pShader, Vector4::Blue(), this, m_Player);
+			Enemy* enemy = new Enemy("Enemy", Vector2(x1, y1), m_pMeshHuman, m_pShader, Vector4::Blue(), this, m_Player, Vector2(1, 1));
 			m_ActiveEnemies.push_back(enemy);
 		}
 		else if (currentLevel == Level2)
 		{
-			Enemy* enemy1 = new Enemy("Enemy", Vector2(x1, y1), m_pMeshHuman, m_pShader, Vector4::White(), this, m_Player);
+			Enemy* enemy1 = new Enemy("Enemy", Vector2(x1, y1), m_pMeshHuman, m_pShader, Vector4::White(), this, m_Player, Vector2(1, 1));
 			m_ActiveEnemies.push_back(enemy1);
-			Enemy* enemy2 = new Enemy("Enemy", Vector2(x2, y2), m_pMeshHuman, m_pShader, Vector4::White(), this, m_Player);
+			Enemy* enemy2 = new Enemy("Enemy", Vector2(x2, y2), m_pMeshHuman, m_pShader, Vector4::White(), this, m_Player, Vector2(1, 1));
 			m_ActiveEnemies.push_back(enemy2);
 		}
 		else if (currentLevel == Level3)
 		{
-			Enemy* enemy = new Enemy("Enemy", Vector2(x1, y1), m_pMeshHuman, m_pShader, Vector4::Orange(), this, m_Player);
+			Enemy* enemy = new Enemy("Enemy", Vector2(x1, y1), m_pMeshHuman, m_pShader, Vector4::Orange(), this, m_Player, Vector2(1, 1));
 			m_ActiveEnemies.push_back(enemy);
 		}
 	}
@@ -166,7 +166,7 @@ void Game::OnEvent(fw::Event* pEvent)
 
 		if (currentLevel != Level3)
 		{
-			Bomb* bomb = new Bomb("Bomb", Vector2(randX, randY), m_BombMesh, m_pShader, Vector4::Grey(), this, m_Player);
+			Bomb* bomb = new Bomb("Bomb", Vector2(randX, randY), m_BombMesh, m_pShader, Vector4::Grey(), this, m_Player, Vector2(1, 1));
 			m_Bombs.push_back(bomb);
 		}
 	}
@@ -183,7 +183,7 @@ void Game::OnEvent(fw::Event* pEvent)
 
 	if (pEvent->GetType() == MakeExplosionEvent::GetStaticEventType())
 	{
-		fw::GameObject* pExplosion = new fw::GameObject("Explosion", m_Player->GetPosition(), m_ExplosionMesh, m_pShader, nullptr, Vector4::Grey(), this);
+		fw::GameObject* pExplosion = new fw::GameObject("Explosion", m_Player->GetPosition(), m_ExplosionMesh, m_pShader, nullptr, Vector4::Grey(), this, Vector2(1, 1));
 		m_Explosions.push_back(pExplosion);
 	}
 
@@ -210,7 +210,7 @@ void Game::OnEvent(fw::Event* pEvent)
 
 	if (pEvent->GetType() == RestartGameEvent::GetStaticEventType())
 	{		
-		m_Player = new Player("Player", Vector2(5, 5), m_pPlayerController, m_PlayerMesh, m_pShader, Vector4::Green(), this);
+		m_Player = new Player("Player", Vector2(5, 5), m_pPlayerController, m_PlayerMesh, m_pShader, Vector4::Green(), this, Vector2(1, 1));
 		m_Players.push_back(m_Player);
 	}
 

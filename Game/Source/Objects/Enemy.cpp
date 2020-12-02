@@ -3,8 +3,8 @@
 #include "Player.h"
 
 
-Enemy::Enemy(std::string name, Vector2 position, fw::Mesh* mesh, fw::ShaderProgram* shader, fw::Vector4 color, fw::GameCore* gameCore, Player* player)
-	: fw::GameObject(name, position, mesh, shader, nullptr, color, gameCore)
+Enemy::Enemy(std::string name, Vector2 position, fw::Mesh* mesh, fw::ShaderProgram* shader, fw::Vector4 color, fw::GameCore* gameCore, Player* player, Vector2 pObjectScale)
+	: fw::GameObject(name, position, mesh, shader, nullptr, color, gameCore, pObjectScale)
 {
 	m_Player = player;
 	initialPosition = position;

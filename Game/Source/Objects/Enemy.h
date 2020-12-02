@@ -9,7 +9,7 @@ class Enemy : public fw::GameObject
 {
 public:
 
-	Enemy(std::string name, Vector2 position, fw::Mesh* mesh, fw::ShaderProgram* shader, fw::Vector4 color, fw::GameCore* gameCore, Player* player);
+	Enemy(std::string name, Vector2 position, fw::Mesh* mesh, fw::ShaderProgram* shader, fw::Vector4 color, fw::GameCore* gameCore, Player* player, Vector2 pObjectScale);
 	virtual ~Enemy() override;
 
 	virtual void Update(float DeltaTime) override;

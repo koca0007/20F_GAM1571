@@ -14,7 +14,7 @@ namespace fw {
 	{
 	public:
 		GameObject();
-		GameObject(std::string name, Vector2 pos, Mesh* pMesh, ShaderProgram* pShader, Texture* pTexture, Vector4 color, GameCore* pGameCore);
+		GameObject(std::string name, Vector2 pos, Mesh* pMesh, ShaderProgram* pShader, Texture* pTexture, Vector4 color, GameCore* pGameCore, Vector2 pObjectScale);
 		virtual ~GameObject();
 
 		virtual void Update(float DeltaTime);
@@ -40,6 +40,7 @@ namespace fw {
 		Texture* m_pTexture = nullptr;
 		GameCore* m_GameCore;
 		Vector4 m_Color = Vector4(1, 1, 1, 1);
+		Vector2 m_ObjectScale;
 
 		Vector2 m_UVScale  = Vector2(1, 1);
 		Vector2 m_UVOffset = Vector2(0, 0);

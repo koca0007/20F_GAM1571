@@ -41,9 +41,13 @@ Game::~Game()
 		delete pShader.second;
 	}
 
-	for (auto pMesh : m_pMeshes)
+	/*for (auto pMesh : m_pMeshes)
 	{
 		delete pMesh.second;
+	}*/
+	for (std::pair<std::string, fw::Mesh*> mesh : m_pMeshes)
+	{
+		delete mesh.second;
 	}
 
 	for (auto object : m_pTextures)
@@ -72,11 +76,12 @@ void Game::Init()
 	m_pMeshes["Player"] = new fw::Mesh(meshPrimType_Box, meshNumVerts_Box, meshAttribs_Box);
 	m_pMeshes["Tilemap"] = new fw::Mesh(meshPrimType_Sprite, meshNumVerts_Sprite, meshAttribs_Sprite);
 	m_pTextures["Player"] = new fw::Texture("Data/Textures/Sokoban.png");
+	m_pTextures["Texture"] = new fw::Texture("Data/Textures/Sokoban.png");
 	m_pSpriteSheets["Sokoban"] = new fw::SpriteSheet("Data/Textures/Sokoban.json");
 
-	m_Tilemap = new Tilemap(Level1Layout, Level1Layout_Width, Level1Layout_Height, nullptr, m_pSpriteSheets["Sokoban"], m_pMeshes["Tilemap"]);
+	m_Tilemap = new Tilemap(Level1Layout, Level1Layout_Width, Level1Layout_Height, m_pTextures["Texture"], m_pSpriteSheets["Sokoban"], m_pMeshes["Tilemap"]);
 
-	m_Player = new Player("Player", Vector2(5, 5), m_pPlayerController, m_pMeshes["Player"], m_pShaders["Basic"], m_pTextures["Player"], Vector4::Grey(), this);
+	m_Player = new Player("Player", Vector2(5, 5), m_pPlayerController, m_pMeshes["Player"], m_pShaders["Basic"], m_pTextures["Player"], Vector4::Grey(), this, Vector2(1,1));
 	m_Players.push_back(m_Player);
 }
 

@@ -19,7 +19,7 @@ Tilemap::Tilemap(const TileType* pLayout, int pWidth, int pHeight, fw::Texture* 
 	m_MapSize = iVector2(pWidth, pHeight);
 
 	m_Properties.resize((int)TileType::TT_NumTypes);
-	m_Properties[(int)TileType::TT_Wall] = TileProperties(m_pSpriteSheet->GetSprite("Blocks/block_01"), false);
+	m_Properties[(int)TileType::TT_Wall] = TileProperties(m_pSpriteSheet->GetSprite("Blocks/block_07"), false);
 	m_Properties[(int)TileType::TT_Floor] = TileProperties(m_pSpriteSheet->GetSprite("Ground/ground_06"), true);
 	m_Properties[(int)TileType::TT_Grass] = TileProperties(m_pSpriteSheet->GetSprite("Ground/ground_05"), true);
 
@@ -28,11 +28,8 @@ Tilemap::Tilemap(const TileType* pLayout, int pWidth, int pHeight, fw::Texture* 
 
 Tilemap::~Tilemap()
 {
-	delete m_pMesh;
-	delete m_Layout;
 	delete m_pShader;
-	delete m_pSpriteSheet;
-	delete m_pTexture;
+	delete[] m_Layout;
 }
 
 void Tilemap::FlipIt(const TileType* pLayout)
@@ -57,14 +54,14 @@ void Tilemap::Draw()
 		for (int x = 0; x < Level1Layout_Width; x++)
 		{
 			int tileIndex = y * m_MapSize.x + x;
-			Vector2 worldPos = Vector2((float)x, (float)y);
+			worldPos = Vector2((float)x, (float)y) * m_TileSize;
 
 			//To flip the layout horizontally, y axis can be adjusted without needing to change the layout array
 			//Vector2 worldPos = Vector2(x, m_MapSize.y - y - 1);
 
-			m_pMesh->Draw(worldPos, m_pShader, nullptr, Vector4::White(),
+			m_pMesh->Draw(worldPos, m_pShader, m_pTexture, Vector4::White(),
 				m_Properties[(int)m_Layout[tileIndex]].UVScale,
-				m_Properties[(int)m_Layout[tileIndex]].UVOffset);
+				m_Properties[(int)m_Layout[tileIndex]].UVOffset, m_TileSize);
 		}
 	}
 }

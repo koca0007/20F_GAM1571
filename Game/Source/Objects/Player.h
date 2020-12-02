@@ -12,7 +12,7 @@ class Player : public fw::GameObject
 {
 public:
 
-	Player(std::string name, Vector2 pPosition, PlayerController* pPlayerController, fw::Mesh* pMesh, fw::ShaderProgram* pShader, Vector4 color, fw::GameCore* pGameCore);
+	Player(std::string name, Vector2 pPosition, PlayerController* pPlayerController, fw::Mesh* pMesh, fw::ShaderProgram* pShader, Vector4 color, fw::GameCore* pGameCore, Vector2 pObjectScale);
 	virtual ~Player();
 
 	virtual void Update(float DeltaTime) override;

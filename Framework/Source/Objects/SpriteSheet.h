@@ -26,8 +26,6 @@ namespace fw
 
 		SpriteInfo GetSprite(std::string name);
 
-		std::string GetSpriteName(std::string animName);
-
 		Vector2 GetUVScale(std::string spriteName);
 
 	private:

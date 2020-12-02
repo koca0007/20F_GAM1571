@@ -4,8 +4,8 @@
 
 
 Enemy::Enemy(std::string name, Vector2 position, fw::Mesh* mesh, fw::ShaderProgram* shader, 
-								fw::Texture* pTexture, fw::Vector4 color, fw::GameCore* gameCore, Player* player)
-	: fw::GameObject(name, position, mesh, shader, pTexture, color, gameCore)
+								fw::Texture* pTexture, fw::Vector4 color, fw::GameCore* gameCore, Player* player, Vector2 pObjectScale)
+	: fw::GameObject(name, position, mesh, shader, pTexture, color, gameCore, pObjectScale)
 {
 	m_Player = player;
 	initialPosition = position;

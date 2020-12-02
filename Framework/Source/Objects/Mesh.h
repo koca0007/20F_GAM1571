@@ -40,7 +40,7 @@ namespace fw {
 		void SetUniform4f(ShaderProgram* pShader, char* name, Vector4 color);
 		void SetUniform1i(ShaderProgram* pShader, char* name, int value);
 
-		void Draw(Vector2 position, ShaderProgram* pShader, Texture* pTexture, Vector4 color, Vector2 UVScale, Vector2 UVOffset);
+		void Draw(Vector2 position, ShaderProgram* pShader, Texture* pTexture, Vector4 color, Vector2 UVScale, Vector2 UVOffset, Vector2 pObjectScale);
 
 	protected:
 		GLuint m_VBO = 0;

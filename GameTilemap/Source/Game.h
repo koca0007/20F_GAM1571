@@ -23,6 +23,8 @@ public:
 	virtual void Update(float deltaTime) override;
 	virtual void Draw() override;
 
+	std::string GetSpriteName(std::string animName);
+
 protected:
 	bool m_VSyncEnabled = true;
 

@@ -87,7 +87,7 @@ namespace fw {
 		glUniform1i(loc, value);
 	}
 
-	void Mesh::Draw(Vector2 position, ShaderProgram* pShader, Texture* pTexture, Vector4 color, Vector2 UVScale, Vector2 UVOffset)
+	void Mesh::Draw(Vector2 position, ShaderProgram* pShader, Texture* pTexture, Vector4 color, Vector2 UVScale, Vector2 UVOffset, Vector2 pObjectScale)
 	{
 		glUseProgram(pShader->GetProgram());
 
@@ -116,6 +116,7 @@ namespace fw {
 
 			SetUniform2f(pShader, "u_UVScale", UVScale);
 			SetUniform2f(pShader, "u_UVOffset", UVOffset);
+			SetUniform2f(pShader, "u_ObjectScale", pObjectScale);
 
 			if (pTexture != nullptr)
 			{
